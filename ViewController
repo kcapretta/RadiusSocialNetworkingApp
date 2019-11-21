@@ -1,0 +1,108 @@
+//
+//  ViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 10/29/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+import Koloda
+import MaterialComponents.MaterialBottomNavigation
+
+class ViewController: UIViewController {
+    
+    // pan down for more info on person
+    @IBOutlet var panDown: UIPanGestureRecognizer!
+    
+    // click to match for dating
+    @IBOutlet weak var datingButton: UIButton!
+    
+    // click to match for networking
+    @IBOutlet weak var networkingButton: UIButton!
+    
+    // click to match for friendship
+    @IBOutlet weak var friendshipButton: UIButton!
+    
+    // click to block someone that you don't want to see you
+    @IBOutlet weak var block: UIButton!
+    
+    @IBOutlet weak var cardView: KolodaView!
+    
+    @IBOutlet weak var nameLbl : UILabel!
+    
+    let images = ["download1","download2","download3"]
+    let townImage = "Town"
+    let bottomNavBar = MDCBottomNavigationBar()
+
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.backgroundColor = .red
+        
+         Utilities.smallButton(datingButton)
+         Utilities.smallButton(networkingButton)
+         Utilities.smallButton(friendshipButton)
+        
+        // nameLbl.text = "James"
+        cardView.delegate = self
+        cardView.dataSource = self
+        
+        // Swipe gesture
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: Selector(("respondToSwipeGesture:")))
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: Selector(("respondToSwipeGesture:")))
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
+        self.view.addGestureRecognizer(swipeLeft)
+
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: Selector(("respondToSwipeGesture:")))
+        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
+        self.view.addGestureRecognizer(swipeDown)
+    }
+    
+}
+
+extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
+    func koloda(_ koloda: KolodaView, viewForCardAt index: Int) -> UIView {
+        let view = UIImageView(image: UIImage(named: images[index]))
+        
+        return view
+    }
+    
+    func kolodaNumberOfCards(_ koloda: KolodaView) -> Int {
+        return images.count
+    }
+   
+//    func koloda(_ koloda: KolodaView, didSelectCardAt index: Int) {
+//        let alert = UIAlertController(title: "", message: "You're Awesome", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "Ok", style: .default))
+//
+//        present(alert, animated: true, completion: nil)
+//    }
+
+    
+    
+}
+
+// Swipe gesture responses
+
+func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+
+    if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+
+
+        switch swipeGesture.direction {
+        case UISwipeGestureRecognizer.Direction.right:
+                print("Let's meet")
+        case UISwipeGestureRecognizer.Direction.down:
+                print("My radius")
+        case UISwipeGestureRecognizer.Direction.left:
+                print("No")
+            default:
+                break
+        }
+    }
+}
