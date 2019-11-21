@@ -1,0 +1,28 @@
+//
+//  introductionTextViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/7/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+
+class introductionTextViewController: UIViewController {
+
+    @IBOutlet weak var nextScreen: UIButton!
+
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setUpElements()
+        }
+        
+        func setUpElements() {
+        
+            Utilities.styleFilledButton(nextScreen)
+        }
+        
+    }
