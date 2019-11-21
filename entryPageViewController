@@ -1,0 +1,40 @@
+//
+//  entryPageViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/8/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class entryPageViewController: UIViewController {
+    
+    @IBOutlet weak var loginButton: UIButton!
+    
+    @IBOutlet weak var signupButton: UIButton!
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        setUpElements()
+    }
+    
+    /*
+    override func viewWillAppear(_ animated: Bool) {
+
+    }
+    */
+    
+    func setUpElements() {
+        
+        Utilities.styleFilledButton(signupButton)
+        Utilities.styleHollowButton(loginButton)
+    }
+    
+
+   
+
+}
