@@ -1,0 +1,122 @@
+//
+//  informationViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/16/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class informationViewController: UIViewController {
+
+    // Birthdate text field
+    @IBOutlet weak var inputText: UITextField!
+    
+    // Gender text field
+    @IBOutlet weak var genderTextField: UITextField!
+    
+    @IBOutlet weak var menSelection: UIButton!
+    
+    @IBOutlet weak var womenSelection: UIButton!
+    
+    // Date picker for birthday
+    private var datePicker: UIDatePicker?
+    
+    // Gender options
+    let gender = ["Woman",
+                "Man",
+                "Transgender",
+                "Gender neutral",
+                "Other"]
+    
+    var selectedGender: String?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Utilities.styleFilledButton(menSelection)
+        Utilities.styleFilledButton(womenSelection)
+        
+        createGenderPicker()
+        createToolbar()
+
+        // Date picker code
+        datePicker = UIDatePicker()
+        datePicker?.datePickerMode = .date
+        datePicker?.addTarget(self, action: #selector(informationViewController.dateChanged(datePicker:)), for: .valueChanged)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(informationViewController.viewTapped(gestureRecognizer:)))
+        
+        view.addGestureRecognizer(tapGesture)
+        
+        inputText.inputView = datePicker
+    }
+    
+    // Gender picker code
+    func createGenderPicker() {
+        
+        let genderPicker = UIPickerView()
+        genderPicker.delegate = self
+        
+        genderTextField.inputView = genderPicker
+        
+        genderPicker.backgroundColor = .white
+    }
+    
+    // Toolbar for "done"
+    func createToolbar() {
+        let toolBar = UIToolbar()
+        toolBar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(informationViewController.dismissKeyboard))
+        
+        toolBar.setItems([doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        
+        // Makes toolbar work for Gender and Birthday
+        genderTextField.inputAccessoryView = toolBar
+        inputText.inputAccessoryView = toolBar
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func viewTapped(gestureRecognizer: UITapGestureRecognizer) {
+    view.endEditing(true)
+    }
+    
+    @objc func dateChanged(datePicker: UIDatePicker) {
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM/dd/yyyy"
+        
+        inputText.text = dateFormatter.string(from: datePicker.date)
+        
+        datePicker.backgroundColor = .white
+    }
+}
+
+// Extension on gender picker
+extension informationViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return gender.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return gender[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        selectedGender = gender[row]
+        genderTextField.text = selectedGender
+    }
+    
+}
