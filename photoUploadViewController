@@ -1,0 +1,69 @@
+//
+//  PhotoUploadViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/14/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+// import FirebasAuth
+// import FirebaseDatabase
+// import FirebaseStorage
+
+class PhotoUploadViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+    
+    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var containingView: UIView!
+    
+    // MAKE IBACTION BUTTON
+    // guard let imageSelected = self.image else {
+    //    print("Avatar is nil")
+    //return
+    
+    // var image: UIImage? = nil
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageViewTapped))
+        containingView.addGestureRecognizer(tapGesture)
+        
+    }
+    
+    // guard let imageData = imageSelected.jpegData(compressionQuality: 0.4) else  {
+    // return
+    // }
+    
+    @objc func handleImageViewTapped() {
+        print("Containing view...")
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        
+        present(picker, animated: true, completion: nil)
+        
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        print("Image... ", image)
+        profileImageView.image = image
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    // let storageRef = Storage.storage().reference(forURL: "https://radius-887c0.firebaseio.com/")
+    
+  //  {
+  //  image = imageSelected
+  //  avatar.image = profileImageView
+  //  }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    //    image = imageOriginal
+   //     avatar.image = imageOriginal
+    }
+
+}
