@@ -1,0 +1,72 @@
+//
+//  loginViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/4/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+import FirebaseAuth
+
+class loginViewController: UIViewController {
+    
+    @IBOutlet weak var emailTextField: UITextField!
+    
+    @IBOutlet weak var passwordTextField: UITextField!
+    
+    @IBOutlet weak var loginButton: UIButton!
+    
+    @IBOutlet weak var stackView: UIStackView!
+
+    @IBOutlet weak var errorLabel: UILabel!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Utilities.styleFilledButton(loginButton)
+       
+        setUpElements()
+    }
+    
+    func setUpElements() {
+        // Hide the error label
+        errorLabel.alpha = 0
+    }
+    
+    // Utilities.styleTextField(firstNameTextField)
+    // Utilities.styleTextField(lastNameTextField)
+    // Utilities.styleFilledButton(loginButton)
+
+
+    
+
+    @IBAction func loginTapped(_ sender: Any) {
+        
+        // Create cleaned text fields
+        let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // Signing in the user
+        Auth.auth().signIn(withEmail: email, password: password) {
+            (result, error) in
+            
+            if let error = error {
+                print("sign in error \(error.localizedDescription)")
+            } else{
+                
+                UserDefaults.standard.set(true, forKey: "signedIn")
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let homeVC = storyboard.instantiateViewController(withIdentifier:  "HomeVC") as! ViewController
+                
+                self.view.window?.rootViewController = homeVC
+                self.view.window?.makeKeyAndVisible()
+            }
+            
+           
+    }
+    
+}
+
+}
+
