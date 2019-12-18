@@ -9,8 +9,11 @@
 import UIKit
 import Koloda
 import MaterialComponents.MaterialBottomNavigation
+import Firebase
+import FirebaseStorage
 
 class ViewController: UIViewController {
+    
     
     // pan down for more info on person
     @IBOutlet var panDown: UIPanGestureRecognizer!
@@ -25,7 +28,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var friendshipButton: UIButton!
     
     // click to block someone that you don't want to see you
-    @IBOutlet weak var block: UIButton!
     
     @IBOutlet weak var cardView: KolodaView!
     
@@ -34,13 +36,20 @@ class ViewController: UIViewController {
     let images = ["download1","download2","download3"]
     let townImage = "Town"
     let bottomNavBar = MDCBottomNavigationBar()
-
+    let firebaseServer = FirebaseFunctions.shared
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    
         self.navigationController?.navigationBar.backgroundColor = .red
         
+        view.bringSubviewToFront(datingButton)
+        
+        view.bringSubviewToFront(networkingButton)
+        
+        view.bringSubviewToFront(friendshipButton)
          Utilities.smallButton(datingButton)
          Utilities.smallButton(networkingButton)
          Utilities.smallButton(friendshipButton)
@@ -63,6 +72,16 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(swipeDown)
     }
     
+    @IBAction func radiusNextVC(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let loginVC = storyboard.instantiateViewController(identifier: "loginViewController")
+                self.navigationController?.pushViewController(loginVC, animated: true)
+           
+
+        let vc = CustomTabBarViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
 }
 
 extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
@@ -74,16 +93,7 @@ extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
     
     func kolodaNumberOfCards(_ koloda: KolodaView) -> Int {
         return images.count
-    }
-   
-//    func koloda(_ koloda: KolodaView, didSelectCardAt index: Int) {
-//        let alert = UIAlertController(title: "", message: "You're Awesome", preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "Ok", style: .default))
-//
-//        present(alert, animated: true, completion: nil)
-//    }
-
-    
+    }    
     
 }
 
