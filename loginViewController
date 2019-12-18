@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class loginViewController: UIViewController {
+class loginViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!
     
@@ -21,10 +21,19 @@ class loginViewController: UIViewController {
 
     @IBOutlet weak var errorLabel: UILabel!
     
+    let firebaseServer = FirebaseFunctions.shared
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Hide "Back" in Back Button
+        let backButton = UIBarButtonItem()
+        backButton.title = ""
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
         Utilities.styleFilledButton(loginButton)
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
        
         setUpElements()
     }
@@ -33,14 +42,9 @@ class loginViewController: UIViewController {
         // Hide the error label
         errorLabel.alpha = 0
     }
-    
-    // Utilities.styleTextField(firstNameTextField)
-    // Utilities.styleTextField(lastNameTextField)
-    // Utilities.styleFilledButton(loginButton)
-
 
     
-
+    // Update data, save and move to next View Controller
     @IBAction func loginTapped(_ sender: Any) {
         
         // Create cleaned text fields
@@ -48,9 +52,10 @@ class loginViewController: UIViewController {
         let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         
         // Signing in the user
-        Auth.auth().signIn(withEmail: email, password: password) {
-            (result, error) in
+        
+        firebaseServer.signIn(email: email, password: password) { (user, error) in
             
+            print("User Object", user)
             if let error = error {
                 print("sign in error \(error.localizedDescription)")
             } else{
@@ -62,11 +67,14 @@ class loginViewController: UIViewController {
                 self.view.window?.rootViewController = homeVC
                 self.view.window?.makeKeyAndVisible()
             }
-            
-           
-    }
+        }
     
-}
+    }
 
-}
-
+    // Forgot Password, next View Controller
+    @IBAction func forgotPW(_ sender: UIButton) {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let forgotPassword = storyboard.instantiateViewController(identifier: "forgotPasswordViewController")
+                self.navigationController?.pushViewController(forgotPassword, animated: true)
+        }
+    }
