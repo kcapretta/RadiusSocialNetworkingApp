@@ -28,12 +28,15 @@ class introductionTextViewController: UIViewController {
         
             Utilities.styleFilledButton(nextScreen)
         }
+    
+    // Links to Community Guidelines
     @IBAction func guidelinesTapped(_ sender: UIButton) {
         if let url = NSURL(string: "https://www.radiusapp.co/blog/community-guidelines"){
             UIApplication.shared.open(url as URL)
         }
     }
     
+    // Go to next View Controller
     @IBAction func nextTextVC(_ sender: UIButton) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
