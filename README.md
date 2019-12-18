@@ -42,13 +42,13 @@ Delete
  5. Allow Location Use
  6. Answer Questions
  7. Edit Profile
- -
+ 
  1. Login / Forgot Passowrd
  2. Radius Screen (geofencing bars and coffee shops)
  3. Select Radius / Swipe Screen
  4. Match / Deny
  5. Messenger
- -
+ 
  Additonally:
  - Edit Preferences
  - View Likes
