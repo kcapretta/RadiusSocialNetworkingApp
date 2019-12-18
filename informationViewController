@@ -7,64 +7,149 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseStorage
 
-class informationViewController: UIViewController {
+class informationViewController: BaseViewController {
 
+    // Hometown text field
+    @IBOutlet weak var hometownTextField: UITextField!
+    
+    // Job text field
+    @IBOutlet weak var jobTextField: UITextField!
+    
     // Birthdate text field
     @IBOutlet weak var inputText: UITextField!
     
     // Gender text field
     @IBOutlet weak var genderTextField: UITextField!
     
-    @IBOutlet weak var menSelection: UIButton!
+    // Religion text field
+    @IBOutlet weak var religionText: UITextField!
     
-    @IBOutlet weak var womenSelection: UIButton!
+    // Indicates activity to save to Firebase
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     // Date picker for birthday
     private var datePicker: UIDatePicker?
     
+    let genderPicker = UIPickerView()
+    let religionPicker = UIPickerView()
+    
+    let firebaseServer = FirebaseFunctions.shared
+    
     // Gender options
     let gender = ["Woman",
                 "Man",
+                "Other",
+                "Agender",
+                "Androgyne",
+                "Androgynous",
+                "Bigender",
+                "Demiman",
+                "Demiwoman",
+                "Gender Fluid",
+                "Gender Neutral",
+                "Gender Nonconforming",
+                "Gender Questioning",
+                "Gender Variant",
+                "Genderqueer",
+                "Intersex",
+                "Intersex Man",
+                "Intersex Woman",
+                "Non-binary",
+                "Non-Gendered",
+                "Pangender",
+                "Polygender",
+                "Third Gender",
                 "Transgender",
-                "Gender neutral",
-                "Other"]
+                "Transgender Man",
+                "Transgender Woman",
+                "Transitioning",
+                "Transsexual",
+                "Two-Spirit"
+    ]
+    
+    let religion = ["Atheist",
+                    "Agnostic",
+                    "Buddhist",
+                    "Catholic",
+                    "Christian",
+                    "Hindu",
+                    "Jewish",
+                    "Muslim",
+                    "Spiritual"]
     
     var selectedGender: String?
+    var selectedReligion: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Utilities.styleFilledButton(menSelection)
-        Utilities.styleFilledButton(womenSelection)
+        let backButton = UIBarButtonItem()
+        backButton.title = ""
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
         createGenderPicker()
+       // createReligionPicker()
         createToolbar()
-
-        // Date picker code
+    }
+    
+    @IBAction func next(_ sender: UIButton) {
+        guard var hometown = hometownTextField.text,
+            var gender = genderTextField.text,
+            var job = jobTextField.text,
+            var religion = religionText.text,
+            var birthday = inputText.text else {
+                print("Fill all fields...")
+                return }
+        
+        gender = gender.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        religion = religion.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+            
+        let homeTownInfo = UserInfo(type: "hometown", value: hometown, visible: true)
+        let genderInfo = UserInfo(type: "gender", value: Gender.valueFor(choice: gender), visible: true)
+        let religionInfo = UserInfo(type: "religion", value: Religion.valueFor(choice: religion), visible: true)
+        let jobInfo = UserInfo(type: "job", value: job, visible: true)
+        let birthdayInfo = UserInfo(type: "birthday", value: birthday, visible: true)
+        
+        firebaseServer.savePersonalDetailsOne(homeTownInfo, birthdayInfo, genderInfo, jobInfo, religionInfo) {[weak self] (error) in
+            if error == nil {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let pageOne = storyboard.instantiateViewController(identifier: "PageOneViewController")
+                self?.navigationController?.pushViewController(pageOne, animated: true)
+            } else {
+                self?.showAlert(withTitle: "Error", message: error?.localizedDescription)
+            }
+        }
+    }
+    
+    func createGenderPicker() {
+        genderPicker.delegate = self
+        genderTextField.inputView = genderPicker
+        genderPicker.backgroundColor = .white
+        
+           // createReligionPicker()
+        religionPicker.delegate = self
+        religionText.inputView = religionPicker
+        religionPicker.backgroundColor = .white
+            // Date picker code
         datePicker = UIDatePicker()
         datePicker?.datePickerMode = .date
         datePicker?.addTarget(self, action: #selector(informationViewController.dateChanged(datePicker:)), for: .valueChanged)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(informationViewController.viewTapped(gestureRecognizer:)))
-        
-        view.addGestureRecognizer(tapGesture)
-        
+        datePicker?.backgroundColor = .white
+        // Birthday maximum
+        datePicker!.maximumDate = Calendar.current.date(byAdding: .year, value: -21, to: Date())
         inputText.inputView = datePicker
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(informationViewController.viewTapped(gestureRecognizer:)))
+
+        view.addGestureRecognizer(tapGesture)
     }
+
     
-    // Gender picker code
-    func createGenderPicker() {
-        
-        let genderPicker = UIPickerView()
-        genderPicker.delegate = self
-        
-        genderTextField.inputView = genderPicker
-        
-        genderPicker.backgroundColor = .white
-    }
-    
-    // Toolbar for "done"
+    // Toolbar for "Done" on Picker View
     func createToolbar() {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
@@ -74,9 +159,10 @@ class informationViewController: UIViewController {
         toolBar.setItems([doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
         
-        // Makes toolbar work for Gender and Birthday
+        // Make Toolbar work for Gender, Birthday and Religion
         genderTextField.inputAccessoryView = toolBar
         inputText.inputAccessoryView = toolBar
+        religionText.inputAccessoryView = toolBar
     }
     
     @objc func dismissKeyboard() {
@@ -87,6 +173,7 @@ class informationViewController: UIViewController {
     view.endEditing(true)
     }
     
+    // Date Picker for Birthday
     @objc func dateChanged(datePicker: UIDatePicker) {
         
         let dateFormatter = DateFormatter()
@@ -95,10 +182,11 @@ class informationViewController: UIViewController {
         inputText.text = dateFormatter.string(from: datePicker.date)
         
         datePicker.backgroundColor = .white
+        inputText.font = UIFont(name: "Avenir", size: 15.0)
     }
 }
 
-// Extension on gender picker
+// Extension on Gender Picker
 extension informationViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -106,17 +194,38 @@ extension informationViewController: UIPickerViewDelegate, UIPickerViewDataSourc
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return gender.count
+        switch pickerView {
+        case genderPicker: return gender.count
+        case religionPicker: return religion.count
+        default: return 0
     }
+}
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return gender[row]
+        switch pickerView {
+        case genderPicker:
+            selectedGender = gender[row]
+            genderTextField.text = selectedGender
+            return gender[row]
+        case religionPicker:
+            selectedReligion = religion[row]
+            religionText.text = selectedReligion
+            return religion[row]
+        default: return ""
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        selectedGender = gender[row]
-        genderTextField.text = selectedGender
+        switch pickerView {
+        case genderPicker:
+            selectedGender = gender[row]
+            genderTextField.text = selectedGender
+        case religionPicker:
+            selectedReligion = religion[row]
+            religionText.text = selectedReligion
+        default: print("Nothing")
+        }
     }
+    
     
 }
