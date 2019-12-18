@@ -1,6 +1,6 @@
 # RadiusDatingApp
 
-Radius is a dating, networking, and friendship application; using your current radius at a bar or coffee shop to bring you from app to real life in record time.
+Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new connections by designing a way to connect with people you're already around within a bar, coffee shop, or other commerical establishment. By geofencing your particular "bar hop" and creating a radius around it, it allows for interaction within a safe and designated space, allowing a user to become invisible just by walking outside of the radius.
 
 The full concept and explanation of this application can be found in this blog post: http://www.thelifeofkiki.com/portfoliodetails/2019/10/25/radius-dating-app-swift
 
