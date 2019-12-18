@@ -22,11 +22,6 @@ class entryPageViewController: UIViewController {
         setUpElements()
     }
     
-    /*
-    override func viewWillAppear(_ animated: Bool) {
-
-    }
-    */
     
     func setUpElements() {
         
@@ -34,7 +29,15 @@ class entryPageViewController: UIViewController {
         Utilities.styleHollowButton(loginButton)
     }
     
-
-   
-
+    @IBAction func signUp(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let signupVC = storyboard.instantiateViewController(identifier: "signupViewController")
+        self.navigationController?.pushViewController(signupVC, animated: true)
+    }
+    @IBAction func logIn(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let loginVC = storyboard.instantiateViewController(identifier: "loginViewController")
+        self.navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
 }
