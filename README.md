@@ -6,7 +6,7 @@ The full concept and explanation of this application can be found in this blog p
 
 The code concept is listed below (see also "RadiusConceptFile.swift"):
 
-Firestore Functionality:
+## Firestore Functionality:
 Create
 Read
 Update
