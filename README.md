@@ -49,7 +49,7 @@ Delete
  4. Match / Deny
  5. Messenger
  
- Additonally:
+ ## Additonally:
  - Edit Preferences
  - View Likes
  - Edit Profile
