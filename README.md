@@ -6,39 +6,35 @@ The full concept and explanation of this application can be found in this blog p
 
 The code concept is listed below (see also "RadiusConceptFile.swift"):
 
-//Firestore Functionality:
-//Create
-//Read
-//Update
-//Delete
+Firestore Functionality:
+Create
+Read
+Update
+Delete
 
 
-/*
- 1. Images
- 2. User Info
- 3. User Signup / Login
- */
-/*
+
+ ## 1. Images
+ ## 2. User Info
+ ## 3. User Signup / Login
+
  ## Images
  1. Profile picture
  2. Account pictures/User images
  3. Swipe view
- */
-/*
+
  ## User Info
  1. Profile page, including questions and vitals
- */
-/*
+
  * Match someone
  * Deny someone
  * Chat with someone
  * List matches
  * List intentions (dating, networking, friendship)
- */
+ 
 
-// Flow Structure of Radius:
+## Flow Structure of Radius:
 
-/*
  1. Signup
  2. Onboarding Introduction
  3. Gathering User Information
@@ -61,6 +57,6 @@ The code concept is listed below (see also "RadiusConceptFile.swift"):
  - View Your Profile
  - Contact Help Center
  - Reach Website
- */
+ 
 
 
