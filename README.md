@@ -1,6 +1,14 @@
 # RadiusDatingApp
 
-Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new connections by designing a way to connect with people you're already around within a bar, coffee shop, or other commerical establishment. By geofencing your particular "bar hop" and creating a radius around it, it allows for interaction within a safe and designated space, allowing a user to become invisible just by walking outside of the radius.
+Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new connections by designing a way to connect with people you're already around within a bar, coffee shop, or other commerical establishment. 
+
+These are the main functions of the application:
+
+- Radius: By geofencing your particular "bar hop" and creating a radius around it, it allows for interaction within a safe and designated space, allowing a user to become invisible just by walking outside of the radius.
+
+- Messenger: After a match is made, the connection can message each other.
+
+- InterestedIn: Dating, networking, and friendship are all options that the user can choose (up to all three). When first connecting, the user chooses what they're interested in the other party. By picking their interest (dating, networking, friendship), this information is auto-populated in the messenger. Ex: "James picked Networking!" as a message.
 
 The full concept and explanation of this application can be found in this blog post: http://www.thelifeofkiki.com/portfoliodetails/2019/10/25/radius-dating-app-swift
 
@@ -11,8 +19,6 @@ The code concept is listed below (see also "RadiusConceptFile.swift"):
 - Read
 - Update
 - Delete
-
-
 
  ## 1. Images
  ## 2. User Info
