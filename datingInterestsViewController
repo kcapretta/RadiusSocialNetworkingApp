@@ -1,0 +1,51 @@
+//
+//  datingInterestsViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 12/19/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class datingInterestsViewController: UIViewController {
+
+    @IBOutlet weak var datingMenSelection: UIButton!
+    
+    @IBOutlet weak var datingWomenSelection: UIButton!
+    
+    @IBOutlet weak var openToAll: UIButton!
+    
+    var selectedButtons: [Int] = []
+    
+    @IBAction func toggledDatingInterest(_ sender: Any) {
+        updateColor(button: sender as! UIButton)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Utilities.styleHollowButton(datingMenSelection)
+        Utilities.styleHollowButton(datingWomenSelection)
+        Utilities.styleHollowButton(openToAll)
+    }
+    
+    func updateColor(button: UIButton) {
+        let tag = button.tag
+        
+        if let index = selectedButtons.firstIndex(of: tag) {
+            selectedButtons.remove(at: index)
+            Utilities.styleHollowButton(button)
+        } else {
+            selectedButtons.append(tag)
+            Utilities.styleFilledButton(button)
+        }
+    }
+
+    @IBAction func backToPreferences(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let backBVC20 = storyboard.instantiateViewController(identifier: "preferencesViewController")
+        self.navigationController?.pushViewController(backBVC20, animated: true)
+    }
+
+}
