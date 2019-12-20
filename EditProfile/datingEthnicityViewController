@@ -1,0 +1,67 @@
+//
+//  ethnicityPreferencesViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 12/1/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class ethnicityPreferencesViewController: UIViewController {
+
+    @IBOutlet weak var americanIndian: UIButton!
+    
+    @IBOutlet weak var africanDescent: UIButton!
+    
+    @IBOutlet weak var eastAsian: UIButton!
+    
+    @IBOutlet weak var middleEastern: UIButton!
+    
+    @IBOutlet weak var pacificIslander: UIButton!
+    
+    @IBOutlet weak var southAsian: UIButton!
+    
+    @IBOutlet weak var caucasian: UIButton!
+    
+    @IBOutlet weak var openToAll: UIButton!
+    
+    var selectedButtons: [Int] = []
+    
+    
+    
+    @IBAction func togggleEthnicity(_ sender: UIButton) {
+        updateColor(button: sender)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Utilities.styleHollowButton(americanIndian)
+        Utilities.styleHollowButton(africanDescent)
+        Utilities.styleHollowButton(eastAsian)
+        Utilities.styleHollowButton(middleEastern)
+        Utilities.styleHollowButton(pacificIslander)
+        Utilities.styleHollowButton(southAsian)
+        Utilities.styleHollowButton(caucasian)
+        Utilities.styleHollowButton(openToAll)
+    }
+    
+    func updateColor(button: UIButton) {
+        let tag = button.tag
+        
+        if let index = selectedButtons.firstIndex(of: tag) {
+            selectedButtons.remove(at: index)
+            Utilities.styleFilledButton(button)
+        } else {
+            selectedButtons.append(tag)
+            Utilities.styleFilledButton(button)
+        }
+    }
+    
+    @IBAction func backButtonVC4(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let backBVC4 = storyboard.instantiateViewController(identifier: "preferencesViewController")
+        self.navigationController?.pushViewController(backBVC4, animated: true)
+    }
+    
+}
