@@ -88,8 +88,8 @@ protocol FirebaseFunctionsProtocol {
     // HomeTown, Birthday, Gender, Job Title, Religion
     func savePersonalDetailsOne(_ hometown: UserInfo<String>, _ birthday: UserInfo<String>, _ gender: UserInfo<Gender>, _ jobtitle: UserInfo<String>, _ religion: UserInfo<Religion>, completion: @escaping (Error?) -> Void)
     
-    // School, Education, Politics, Drinking, Height
-    func savePersonalDetailsTwo(_ school: UserInfo<String>, _ education: UserInfo<EducationLevel>, _ politics: UserInfo<Politics>, _ drinking: UserInfo<Drinking>, _ height: UserInfo<String>, completion: @escaping (Error?) -> Void)
+    // School, Education, Politics, Drink, Height
+    func savePersonalDetailsTwo(_ school: UserInfo<String>, _ education: UserInfo<EducationLevel>, _ politics: UserInfo<Politics>, _ drink: UserInfo<Drink>, _ height: UserInfo<String>, completion: @escaping (Error?) -> Void)
     
      // Questions Input
     func savePersonalDetailsQuestions(_ q1: UserInfo<String>, _ q2: UserInfo<String>, _ q3: UserInfo<String>, _ q4: UserInfo<String>, _ q5: UserInfo<String>, _ q6: UserInfo<String>, completion: @escaping (Error?) -> Void)
@@ -107,6 +107,62 @@ protocol FirebaseFunctionsProtocol {
 
     // SLICETHREE
 class FirebaseFunctions: FirebaseFunctionsProtocol {
+    func setFamilyPlans(familyPlans: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setKids(kids: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setEthnicity(ethnicity: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setLookingFor(lookingFor: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setInterestedIn(interestedIn: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setReligion(religion: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setEducationLevel(educationLevel: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setPolitics(politics: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setHeight(height: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setHometown(homeTown: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setBirthday(birthday: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setJobTitle(jobTitle: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func setSchool(school: String, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
+    func saveInterestedIn(interestedIn: UserInfo<[InterestedIn]>, completion: @escaping (Error?) -> Void) {
+        
+    }
+    
     
     
     // Interested In Dating / Networking / Friendship
@@ -177,8 +233,8 @@ class FirebaseFunctions: FirebaseFunctionsProtocol {
         }
     }
     
-    // School, Education Level, Politics, Drinking, Height
-    func savePersonalDetailsTwo(_ school: UserInfo<String>, _ education: UserInfo<EducationLevel>, _ politics: UserInfo<Politics>, _ drinking: UserInfo<Drinking>, _ height: UserInfo<String>, completion: @escaping (Error?) -> Void) {
+    // School, Education Level, Politics, Drink, Height
+    func savePersonalDetailsTwo(_ school: UserInfo<String>, _ education: UserInfo<EducationLevel>, _ politics: UserInfo<Politics>, _ drink: UserInfo<Drink>, _ height: UserInfo<String>, completion: @escaping (Error?) -> Void) {
         let usersRef = db.child("users")
         // guard let key = usersRef.childByAutoId().key else { return }
         
@@ -186,7 +242,7 @@ class FirebaseFunctions: FirebaseFunctionsProtocol {
             newUser.school = school
             newUser.educationLevel = education
             newUser.politics = politics
-            ////newUser.height = height
+            newUser.height = height
             
             usersRef.child("\(uid)").setValue(newUser.makeDictionary()){(error: Error?, ref: DatabaseReference) in
                 print("Error ", error, ref)
