@@ -1,0 +1,220 @@
+//
+//  PageOneViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 11/19/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+import Firebase
+import FirebaseStorage
+
+class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate {
+
+    @IBOutlet weak var schoolInput: UITextField!
+    
+    @IBOutlet weak var educationText: UITextField!
+    
+    @IBOutlet weak var politicalText: UITextField!
+    
+    @IBOutlet weak var drinkingText: UITextField!
+    
+    @IBOutlet weak var heightText: UITextField!
+    
+    let educationPicker = UIPickerView()
+    let politicsPicker = UIPickerView()
+    let drinkPicker = UIPickerView()
+    let heightsPicker = UIPickerView()
+    
+    let firebaseServer = FirebaseFunctions.shared
+    
+    
+        // Picker values
+        
+        let education = ["High school",
+                         "Bootcamp",
+                         "Some College",
+                         "Self Taught",
+                         "Undergrad",
+                         "Postgrad"]
+    
+        let politics = ["Liberal",
+                        "Moderate",
+                        "Democrat",
+                        "Libertarian",
+                        "Conservative"]
+    
+        let drinking = ["Yes", "No", "Sometimes"]
+    
+        let heights = ["4'0 (122 cm)", "4'1 (125 cm)", "4'2 (128 cm)", "4'3 (130 cm)", "4'4 (133 cm)", "4'5 (135 cm)", "4'6 (138 cm)", "4'7 (140 cm)", "4'8 (143 cm)", "4'9 (145 cm)", "4'10 (148 cm)", "4'11 (150 cm)", "5'0 (153 cm)", "5'1 (155 cm)", "5'2 (158 cm)", "5'3 (161 cm)", "5'4 (163 cm)", "5'5 (166 cm)", "5'6 (168 cm)", "5'7 (171 cm)", "5'8 (173 cm)", "5'9 (176 cm)", "5'10 (178 cm)", "5'11 (181 cm)", "6'0 (183 cm)", "6'1 (186 cm)", "6'2 (189 cm)", "6'3 (191 cm)", "6'4 (194 cm)", "6'5 (196 cm)", "6'6 (199 cm)", "6'7 (201 cm)", "6'8 (204 cm)", "6'9 (206 cm)", "6'9 (209 cm)", "6'11 (211 cm)", "7'0 (214 cm)"]
+
+    var selectedEducation: String?
+    var selectedPolitics: String?
+    var selectedDrinking: String?
+    var selectedHeight: String?
+    
+        override func viewDidLoad() {
+        super.viewDidLoad()
+            
+            let backButton = UIBarButtonItem()
+            backButton.title = ""
+            self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+
+            
+         createEducationPicker()
+         createToolbar()
+    }
+    
+    
+    @IBAction func next(_ sender: UIButton) {
+        
+        guard var school = schoolInput.text,
+            var education = educationText.text,
+            var politics = politicalText.text,
+            var drinking = drinkingText.text,
+            var height = heightText.text else {
+                print("Fill all fields...")
+                return }
+        
+        politics = politics.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        education = education.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        drinking = drinking.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        height = height.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        
+        let schoolInfo = UserInfo(type: "school", value: school, visible: true)
+        let educationInfo = UserInfo(type: "education", value: EducationLevel.valueFor(choice: education), visible: true)
+        let politicsInfo = UserInfo(type: "politics", value: Politics.valueFor(choice: politics), visible: true)
+        let drinkInfo = UserInfo(type: "drink", value: Drink.valueFor(choice: drinking), visible: true)
+        let heightInfo = UserInfo(type: "height", value: height, visible: true)
+        
+        firebaseServer.savePersonalDetailsTwo(schoolInfo, educationInfo, politicsInfo, drinkInfo, heightInfo) {[weak self] (error) in
+            
+            if error == nil {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let pageOne = storyboard.instantiateViewController(identifier: "PageFourViewController")
+                self?.navigationController?.pushViewController(pageOne, animated: true)
+            }
+            print("Done but with error ...", error)
+        }
+    }
+
+    
+    func createEducationPicker() {
+        educationPicker.delegate = self
+        educationText.inputView = educationPicker
+        educationPicker.backgroundColor = .white
+        
+        politicsPicker.delegate = self
+        politicalText.inputView = politicsPicker
+        politicsPicker.backgroundColor = .white
+        
+        drinkPicker.delegate = self
+        drinkingText.inputView = drinkPicker
+        drinkPicker.backgroundColor = .white
+        
+        heightsPicker.delegate = self
+        heightText.inputView = heightsPicker
+        heightsPicker.backgroundColor = .white
+    }
+    
+        // Toolbar for "done"
+        func createToolbar() {
+            let toolBar = UIToolbar()
+            toolBar.sizeToFit()
+
+
+            let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(PageOneViewController.dismissKeyboard))
+
+            toolBar.setItems([doneButton], animated: false)
+            toolBar.isUserInteractionEnabled = true
+
+            // Makes toolbar apply to text fields
+            educationText.inputAccessoryView = toolBar
+            politicalText.inputAccessoryView = toolBar
+            drinkingText.inputAccessoryView = toolBar
+            heightText.inputAccessoryView = toolBar
+        }
+
+    @objc func dismissKeyboard() {
+            view.endEditing(true)
+        }
+    
+    
+    // Picker Extension
+}
+
+    extension PageOneViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // Counting Picker View
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch pickerView {
+        case educationPicker: return education.count
+        case politicsPicker: return politics.count
+        case drinkPicker: return drinking.count
+        case heightsPicker: return heights.count
+        default: return 0
+        }
+    }
+    
+    // Rows
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch pickerView {
+        case educationPicker:
+            selectedEducation = education[row]
+            educationText.text = selectedEducation
+            return education[row]
+        case politicsPicker:
+            selectedPolitics = politics[row]
+            politicalText.text = selectedPolitics
+            return politics[row]
+        case drinkPicker:
+            selectedDrinking = drinking[row]
+            drinkingText.text = selectedDrinking
+            return drinking[row]
+        case heightsPicker:
+            selectedHeight = heights[row]
+            heightText.text = selectedHeight
+            return heights[row]
+            
+        default: return ""
+        }
+    }
+    
+    // didSelect Function
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch pickerView {
+        case educationPicker:
+            selectedEducation = education[row]
+            educationText.text = selectedEducation
+        case politicsPicker:
+            selectedPolitics = politics[row]
+            politicalText.text = selectedPolitics
+        case drinkPicker:
+            selectedDrinking = drinking[row]
+            drinkingText.text = selectedDrinking
+        case heightsPicker:
+            selectedHeight = heights[row]
+            heightText.text = selectedHeight
+        default: print("Nothing...")
+        }
+        if(pickerView == educationPicker) {
+            selectedEducation = education[row]
+            educationText.text = selectedEducation
+        } else if (pickerView == politicsPicker) {
+        }
+    
+    }
+
+}
+    
+
+    
+
+
