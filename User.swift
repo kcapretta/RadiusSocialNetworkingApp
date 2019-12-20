@@ -139,14 +139,12 @@ enum Religion: CustomStringConvertible {
 enum Gender: CustomStringConvertible {
     case woman
     case man
-    case other
     case agender
     case androgyne
     case androgynous
     case bigender
     case demiman
     case demiwoman
-    // Two Word Items
     case genderfluid
     case genderneutral
     case gendernonconforming
@@ -172,7 +170,6 @@ enum Gender: CustomStringConvertible {
         switch choice {
         case "woman": return .woman
         case "man": return .man
-        case "other": return .other
         case "agender": return .agender
         case "androgyne": return .androgyne
         case "androgynous": return .androgynous
@@ -232,7 +229,6 @@ enum Gender: CustomStringConvertible {
         case .transgenderwoman: return "transgenderwoman"
         case .transitioning: return "transitioning"
         case .transsexual: return "transsexual"
-        case .other: return "other"
         case .twospirit: return "twospirit"
         }
     }
@@ -337,138 +333,14 @@ enum EducationLevel: CustomStringConvertible {
     }
 }
 
-// Height
+// Drink
 
-enum Height: CustomStringConvertible {
-    case 122
-    case 125
-    case 128
-    case 130
-    case 133
-    case 135
-    case 138
-    case 140
-    case 143
-    case 145
-    case 148
-    case 150
-    case 153
-    case 155
-    case 158
-    case 161
-    case 163
-    case 166
-    case 168
-    case 171
-    case 173
-    case 176
-    case 178
-    case 181
-    case 183
-    case 186
-    case 189
-    case 191
-    case 194
-    case 196
-    case 199
-    case 201
-    case 204
-    case 206
-    case 209
-    case 211
-    case 214
-
-    static func valueFor(choice: String) -> Height {
-        switch choice {
-        case "122": return .122
-        case "125": return .125
-        case "128": return .128
-        case "130": return .130
-        case "133": return .133
-        case "135": return .135
-        case "138": return .138
-        case "140": return .140
-        case "143": return .143
-        case "145": return .145
-        case "148": return .148
-        case "150": return .150
-        case "153": return .153
-        case "155": return .155
-        case "158": return .158
-        case "161": return .161
-        case "163": return .163
-        case "166": return .166
-        case "168": return .168
-        case "171": return .171
-        case "173": return .173
-        case "176": return .176
-        case "178": return .178
-        case "181": return .181
-        case "183": return .183
-        case "189": return .189
-        case "191": return .191
-        case "194": return .194
-        case "196": return .196
-        case "199": return .199
-        case "201": return .201
-        case "204": return .204
-        case "206": return .206
-        case "209": return .209
-        case "211": return .211
-        case "214": return .214
-        default: return .122
-        }
-    }
-    var description: String {
-        switch self {
-        case .122: return "122"
-        case .125: return "125"
-        case .128: return "128"
-        case .130: return "130"
-        case .133: return "133"
-        case .135: return "135"
-        case .138: return "138"
-        case .140: return "140"
-        case .143: return "143"
-        case .145: return "145"
-        case .148: return "148"
-        case .150: return "150"
-        case .153: return "153"
-        case .155: return "155"
-        case .158: return "158"
-        case .161: return "161"
-        case .163: return "163"
-        case .166: return "166"
-        case .168: return "168"
-        case .171: return "171"
-        case .173: return "173"
-        case .176: return "176"
-        case .178: return "178"
-        case .181: return "181"
-        case .183: return "183"
-        case .189: return "189"
-        case .191: return "191"
-        case .194: return "194"
-        case .196: return "196"
-        case .199: return "199"
-        case .201: return "201"
-        case .204: return "204"
-        case .209: return "209"
-        case .211: return "211"
-        case .214: return "214"
-        }
-    }
-}
-
-
-// Drinking
-
-enum Drinking: CustomStringConvertible {
+enum Drink: CustomStringConvertible {
     case yes
     case no
     case sometimes
     
-    static func valueFor(choice: String) -> Drinking {
+    static func valueFor(choice: String) -> Drink {
         switch choice {
         case "yes": return .yes
         case "no": return .no
@@ -493,13 +365,17 @@ enum InterestedIn: CustomStringConvertible {
     case networking
     case friendship
     
-    static func valueFor(choice: String) -> InterestedIn {
-        switch choice {
-        case "dating": return .dating
-        case "networking": return .networking
-        case "friendship": return .friendship
-        default: return .dating
+    static func valueFor(choice: [String]) -> [InterestedIn] {
+        var result = [InterestedIn]()
+        for item in choice {
+            switch item {
+            case "dating": result.append(.dating)
+            case "networking": result.append(.networking)
+            case "friendship": result.append(.friendship)
+            default: result.append(contentsOf: [])
+            }
         }
+        return result
     }
     
     var description: String {
@@ -551,11 +427,11 @@ struct LocalUser {
     var religiousBeliefs: UserInfo<Religion>? = nil
     var homeTown: UserInfo<String>? = nil
     var politics: UserInfo<Politics>? = nil
-    //var height: UserInfo<String>? = nil
+    var height: UserInfo<String>? = nil
     var ethnicity: UserInfo<Ethnicity>? = nil
     var kids: UserInfo<Bool>? = nil
     var familyPlans: UserInfo<FamilyPlans>? = nil
-    var drinking: UserInfo<Drinking>? = nil
+    var drink: UserInfo<Drink>? = nil
     var smoking: UserInfo<Smoking>? = nil
     var lookingFor: UserInfo<LookingFor>? = nil
     var lifeGoals: UserInfo<String>? = nil
@@ -595,7 +471,7 @@ struct LocalUser {
             "aboutYou": toKnow?.dictionaryFor() ?? [:],
             "interestedIn": interestedIn?.dictionaryFor() ?? [:],
             "politics": interestedIn?.dictionaryFor() ?? [:],
-            "drinking": drinking?.dictionaryFor() ?? [:],
+            "drink": drink?.dictionaryFor() ?? [:],
             "familyPlans": familyPlans?.dictionaryFor() ?? [:],
             "kids": kids?.dictionaryFor() ?? [:],
             "ethnicity": ethnicity?.dictionaryFor() ?? [:],
@@ -625,7 +501,7 @@ struct LocalUser {
         let politics = dictionary["politics"] as? [String: Any]
         let ethnicity = dictionary["ethnicity"] as? [String: Any]
         let kids = dictionary["kids"] as? [String: Any]
-        let drinking = dictionary["drinking"] as? [String: Any]
+        let drink = dictionary["drink"] as? [String: Any]
         let smoking = dictionary["smoking"] as? [String: Any]
         let lookingFor = dictionary["lookingFor"] as? [String: Any]
         let homeTown = dictionary["homeTown"] as? [String: Any]
@@ -718,10 +594,10 @@ struct LocalUser {
                                                                 value: FamilyPlans.valueFor(choice: kids?["value"] as? String ?? ""),
                                                                 visible: kids?["visible"] as? Bool ?? false)
         
-        // Drinking Value
-        let drinkingValue: UserInfo<Drinking> = UserInfo(type: "drinkingValue",
-                                                                value: Drinking.valueFor(choice: drinking?["value"] as? String ?? ""),
-                                                                visible: drinking?["visible"] as? Bool ?? false)
+        // Drink Value
+        let drinkValue: UserInfo<Drink> = UserInfo(type: "drinkValue",
+                                                                value: Drink.valueFor(choice: drink?["value"] as? String ?? ""),
+                                                                visible: drink?["visible"] as? Bool ?? false)
         
         // Smoking Value
         let smokingValue: UserInfo<Smoking> = UserInfo(type: "smokingValue",
@@ -734,8 +610,8 @@ struct LocalUser {
                                                                 visible: lookingFor?["visible"] as? Bool ?? false)
         
         // Interested In ( dating / networking / friendship )
-               let interestedInValue: UserInfo<InterestedIn> = UserInfo(type: "interestedInValue",
-                                                                       value: InterestedIn.valueFor(choice: interestedIn?["value"] as? String ?? ""),
+               let interestedInValue: UserInfo<[InterestedIn]> = UserInfo(type: "interestedIn",
+                                                                       value: InterestedIn.valueFor(choice: interestedIn?["value"] as? [String] ?? []),
                                                                        visible: interestedIn?["visible"] as? Bool ?? false)
         
         // DATE PICKER
@@ -748,8 +624,8 @@ struct LocalUser {
         
         // CURRENTLY WORKING ON
         // Height
-        let heightValue: UserInfo<Height> = UserInfo(type: "heightValue",
-                                                                value: Height.valueFor(choice: height?["value"] as? String ?? ""),
+        let heightValue: UserInfo<String> = UserInfo(type: "heightValue",
+                                                                value: height?["value"] as? String ?? "",
                                                                 visible: height?["visible"] as? Bool ?? false)
         
         
@@ -769,7 +645,7 @@ struct LocalUser {
         
         // SLICEELEVEN
         // Create localUser
-        let localUser = LocalUser(firstName: firstName, lastName: lastName, email: email, gender: genderValue, profilePicture: profilePict, birthday: nil, jobTitle: jobTitleValue, school: schoolValue, educationLevel: educationLevelValue, religiousBeliefs: religiousBeliefValue, homeTown: homeTownValue, politics: politicsValue, ethnicity: ethnicityValue, familyPlans: familyPlansValue, drinking: drinkingValue, smoking: smokingValue, lookingFor: lookingForValue, lifeGoals: nil, teachMe: nil, changeMind: nil, takePride: nil, height: heightValue, imLookingFor: nil, toKnow: nil, interestedIn: interestedInValue, accountPicture1: accountPict1, accountPicture2: accountPict2, accountPicture3: accountPict3, accountPicture4: accountPict4, accountPicture5: accountPict5, accountPicture6: accountPict6)
+        let localUser = LocalUser(firstName: firstName, lastName: lastName, email: email, gender: genderValue, profilePicture: profilePict, birthday: nil, jobTitle: jobTitleValue, school: schoolValue, educationLevel: educationLevelValue, religiousBeliefs: religiousBeliefValue, homeTown: homeTownValue, politics: politicsValue, height: heightValue, ethnicity: ethnicityValue, familyPlans: familyPlansValue, drink: drinkValue, smoking: smokingValue, lookingFor: lookingForValue, lifeGoals: nil, teachMe: nil, changeMind: nil, takePride: nil, imLookingFor: nil, toKnow: nil, interestedIn: interestedInValue, accountPicture1: accountPict1, accountPicture2: accountPict2, accountPicture3: accountPict3, accountPicture4: accountPict4, accountPicture5: accountPict5, accountPicture6: accountPict6)
         // kids
         // birthday
         
@@ -778,3 +654,4 @@ struct LocalUser {
         
     }
 }
+
