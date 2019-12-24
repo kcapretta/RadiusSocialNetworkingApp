@@ -78,7 +78,7 @@ class EditProfileViewController: UIViewController, UITextFieldDelegate, UIPicker
     let kids = PickerViewDataSource.kids
     let height = PickerViewDataSource.heights
     let ethnicity = PickerViewDataSource.ethnicity
-    let birthday = DatePickerDataSource.birthday
+    //let birthday = DatePickerDataSource.birthday
     let familyPlans = PickerViewDataSource.familyPlans
     let religion = PickerViewDataSource.religion
     let education = PickerViewDataSource.education
@@ -115,6 +115,18 @@ class EditProfileViewController: UIViewController, UITextFieldDelegate, UIPicker
         createToolbar()
         
     }
+    
+    // Date Picker Date Changed
+    @objc func dateChanged(datePicker: UIDatePicker) {
+           
+           let dateFormatter = DateFormatter()
+           dateFormatter.dateFormat = "MM/dd/yyyy"
+           
+           birthdayTextField.text = dateFormatter.string(from: datePicker.date)
+           
+           datePicker.backgroundColor = .white
+           birthdayTextField.font = UIFont(name: "Avenir", size: 15.0)
+       }
     
     func updateUIWithUserInfo() {
         // PULL DATA FROM FIREBASE
@@ -182,9 +194,18 @@ class EditProfileViewController: UIViewController, UITextFieldDelegate, UIPicker
         ethnicityTextField.inputView = ethnicityPicker
         ethnicityPicker.backgroundColor = .white
         
-//        birthdayPicker.delegate = self
-//        birthdayTextField.inputView = birthdayPicker
-//        birthdayPicker.backgroundColor = .white
+        //birthdayPicker.delegate = self
+        birthdayTextField.inputView = birthdayPicker
+        birthdayPicker.backgroundColor = .white
+        
+        // Date picker code
+        // datePicker = UIDatePicker()
+        birthdayPicker.datePickerMode = .date
+        birthdayPicker.addTarget(self, action: #selector(informationViewController.dateChanged(datePicker:)), for: .valueChanged)
+        
+        birthdayPicker.backgroundColor = .white
+        // Birthday maximum
+        birthdayPicker.maximumDate = Calendar.current.date(byAdding: .year, value: -21, to: Date())
         
         familyPlansPicker.delegate = self
         familyPlansTextField.inputView = familyPlansPicker
@@ -253,7 +274,7 @@ extension EditProfileViewController: UIPickerViewDataSource
             case genderPicker: return gender.count
             case heightPicker: return height.count
             case ethnicityPicker: return ethnicity.count
-            case birthdayPicker: return birthday.count
+            //case birthdayPicker: return birthday.count
             case kidsPicker: return kids.count
             case familyPlansPicker: return familyPlans.count
             case religionPicker: return religion.count
@@ -321,9 +342,9 @@ extension EditProfileViewController: UIPickerViewDataSource
             case ethnicityPicker:
                 selectedEthnicity = ethnicity[row]
                 ethnicityTextField.text = selectedEthnicity
-//            case birthdayDatePicker:
-//                selectedBirthday = birthday[row]
-//                birthdayTextField.text = selectedBirthday
+            case birthdayPicker:
+                selectedBirthday = birthdayPicker.date.description
+                birthdayTextField.text = selectedBirthday
             case kidsPicker:
                 haveKids = kids[row] == "Have Kids"
                 kidsTextField.text = kids[row]
