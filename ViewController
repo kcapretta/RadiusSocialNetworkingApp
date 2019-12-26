@@ -10,10 +10,13 @@ import UIKit
 import Koloda
 import MaterialComponents.MaterialBottomNavigation
 import Firebase
+import FirebaseAuth
 import FirebaseStorage
 
 class ViewController: UIViewController {
     
+    
+    @IBOutlet weak var viewOnData: UIView!
     
     // pan down for more info on person
     @IBOutlet var panDown: UIPanGestureRecognizer!
@@ -27,23 +30,31 @@ class ViewController: UIViewController {
     // click to match for friendship
     @IBOutlet weak var friendshipButton: UIButton!
     
-    // click to block someone that you don't want to see you
-    
     @IBOutlet weak var cardView: KolodaView!
     
+    // Labels to Pull Data
     @IBOutlet weak var nameLbl : UILabel!
     
     let images = ["download1","download2","download3"]
     let townImage = "Town"
     let bottomNavBar = MDCBottomNavigationBar()
     let firebaseServer = FirebaseFunctions.shared
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-    
-        self.navigationController?.navigationBar.backgroundColor = .red
+        // Shadow on View
+        self.viewOnData.layer.shadowColor = UIColor.gray.cgColor
+        self.viewOnData.layer.shadowOpacity = 0.5
+        self.viewOnData.layer.shadowOffset = CGSize(width: 2, height: 2)
+        self.viewOnData.layer.shadowRadius = 7
+        self.viewOnData.layer.masksToBounds = false
+
+        
+        // Pull Data Fields from newUser / Firebase
+        nameLbl.text = newUser.firstName
+        
+        self.navigationController?.navigationBar.backgroundColor = .white
         
         view.bringSubviewToFront(datingButton)
         
