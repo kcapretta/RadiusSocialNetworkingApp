@@ -1,0 +1,26 @@
+//
+//  LikePageViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 12/26/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class LikePageViewController: UITabBarController {
+
+    @IBOutlet weak var viewData: UIView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Shadow on View
+//        self.viewData.layer.shadowColor = UIColor.gray.cgColor
+//        self.viewData.layer.shadowOpacity = 0.5
+//        self.viewData.layer.shadowOffset = CGSize(width: 2, height: 2)
+//        self.viewData.layer.shadowRadius = 7
+        
+    }
+    
+}
