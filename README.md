@@ -91,49 +91,45 @@ Here’s the meat of this blog. I’m going to break down the code as much as po
 
 # Sign up / Sign in Authentication: 
 
-All corresponding authentication pages can be found here
+- All corresponding authentication pages can be found here
 
-Design entryPageViewController, loginViewController, signupViewController, and forgotPasswordViewController
+- Design entryPageViewController, loginViewController, signupViewController, and forgotPasswordViewController
 
-Create new account in Firebase to hook up authentication process
+- Create new account in Firebase to hook up authentication process
 
-Take a look at Firebase Functions to understand how this connection was coded
+- Take a look at Firebase Functions to understand how this connection was coded
 
-Create forgotPassword as a functioning View Controller which sends an email when this is triggered
+- Create forgotPassword as a functioning View Controller which sends an email when this is triggered
 
 # New User Sign Up: 
 
-Create a thorough group of View Controllers that interact with the user: asking questions, confirming uploads and retrieving vitals about the new account
+- Create a thorough group of View Controllers that interact with the user: asking questions, confirming uploads and retrieving vitals about the new account
 
-Develop picker views to give options to new users
+- Develop picker views to give options to new users
 
-Connect all of this new data to Firebase
+- Connect all of this new data to Firebase
 
-Make profile pictures upload properly from phone to application and then to Firebase
+- Make profile pictures upload properly from phone to application and then to Firebase
 
 # Edit Profile: 
 
-Implement entire profile to be edited
+- Implement entire profile to be edited
 
-Create the code for this data to be populated from Firebase for a seamless integration from data input to data output
+- Create the code for this data to be populated from Firebase for a seamless integration from data input to data output
 
-Allow to filters to be used through on / off buttons, creating a better user experience
+- Allow to filters to be used through on / off buttons, creating a better user experience
 
 # User Interaction: 
 
-Hard code a messenger from start to finish for a more reliable layout for messaging and connect this to Firebase
+- Hard code a messenger from start to finish for a more reliable layout for messaging and connect this to Firebase
 
-Create a swipe view so that users can swipe through people that they like or dislike, choosing their interest in this person as well
+- Create a swipe view so that users can swipe through people that they like or dislike, choosing their interest in this person as well
 
-Populate other users from Firebase to create a fully functioning swipe view
+- Populate other users from Firebase to create a fully functioning swipe view
 
-Design geofencing around bars / restaurants / coffee shops to allow users to use their location to swipe and connect
+- Design geofencing around bars / restaurants / coffee shops to allow users to use their location to swipe and connect
 
-Create assisting pages to inform users of the application’s policy and best practices
-
-THE COMPLETED PROJECT
-
-In my eyes, I’m equally incredibly happy with the app while also knowing that there’s still more to do. This was one of the most challenging endeavors that I have ever completed — and it’s taught me that I can do this again. That I can build an entire app from scratch on my own, from start to finish, and I can do it quickly. This just drives me to continue to build more and more and become the best that I can.
+- Create assisting pages to inform users of the application’s policy and best practices
  
 
 
