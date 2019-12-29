@@ -89,7 +89,7 @@ THE STEPS TAKEN
 
 Here’s the meat of this blog. I’m going to break down the code as much as possible. I’m hoping to go back someday soon and create a COMPLETE breakdown (think, “Dummies Guide to Building an Entire App from Scratch with Absolutely no Experience”) — but until then, this will do.
 
-# Sign up / Sign in Authentication: 
+## Sign up / Sign in Authentication: 
 
 - All corresponding authentication pages can be found here
 
@@ -101,7 +101,7 @@ Here’s the meat of this blog. I’m going to break down the code as much as po
 
 - Create forgotPassword as a functioning View Controller which sends an email when this is triggered
 
-# New User Sign Up: 
+## New User Sign Up: 
 
 - Create a thorough group of View Controllers that interact with the user: asking questions, confirming uploads and retrieving vitals about the new account
 
@@ -111,7 +111,7 @@ Here’s the meat of this blog. I’m going to break down the code as much as po
 
 - Make profile pictures upload properly from phone to application and then to Firebase
 
-# Edit Profile: 
+## Edit Profile: 
 
 - Implement entire profile to be edited
 
@@ -119,7 +119,7 @@ Here’s the meat of this blog. I’m going to break down the code as much as po
 
 - Allow to filters to be used through on / off buttons, creating a better user experience
 
-# User Interaction: 
+## User Interaction: 
 
 - Hard code a messenger from start to finish for a more reliable layout for messaging and connect this to Firebase
 
