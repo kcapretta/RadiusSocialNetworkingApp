@@ -35,14 +35,45 @@ class ViewController: UIViewController {
     // Labels to Pull Data
     @IBOutlet weak var nameLbl : UILabel!
     
+    @IBOutlet weak var ageData: UILabel!
+    
+    @IBOutlet weak var heightData: UILabel!
+    
+    @IBOutlet weak var kidsData: UILabel!
+    
+    @IBOutlet weak var familyPlansData: UILabel!
+    
+    @IBOutlet weak var occupationData: UILabel!
+    
+    @IBOutlet weak var homeTownData: UILabel!
+    
+    @IBOutlet weak var politicsData: UILabel!
+    
+    @IBOutlet weak var religionData: UILabel!
+    
+    @IBOutlet weak var ethnicityData: UILabel!
+    
+    @IBOutlet weak var drinkingData: UILabel!
+    
+    @IBOutlet weak var schoolData: UILabel!
+    
+    @IBOutlet weak var educationData: UILabel!
+    
     let images = ["download1","download2","download3"]
     let townImage = "Town"
     let bottomNavBar = MDCBottomNavigationBar()
     let firebaseServer = FirebaseFunctions.shared
+    
+    var users: [LocalUser] = []
+    //var postData = [String]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        firebaseServer.fetchUsers {[weak self] (users) in
+            self?.users = users
+            self?.cardView.reloadData()
+        }
         // Shadow on View
         self.viewOnData.layer.shadowColor = UIColor.gray.cgColor
         self.viewOnData.layer.shadowOpacity = 0.5
@@ -50,9 +81,6 @@ class ViewController: UIViewController {
         self.viewOnData.layer.shadowRadius = 7
         self.viewOnData.layer.masksToBounds = false
 
-        
-        // Pull Data Fields from newUser / Firebase
-        nameLbl.text = newUser.firstName
         
         self.navigationController?.navigationBar.backgroundColor = .white
         
@@ -93,37 +121,70 @@ class ViewController: UIViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
         
     }
+    
+    // Swipe gesture responses
+
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+
+
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizer.Direction.right:
+                    print("Let's meet")
+            case UISwipeGestureRecognizer.Direction.down:
+                    print("My radius")
+            case UISwipeGestureRecognizer.Direction.left:
+                    print("No")
+                default:
+                    break
+            }
+        }
+    }
 }
 
 extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
     func koloda(_ koloda: KolodaView, viewForCardAt index: Int) -> UIView {
-        let view = UIImageView(image: UIImage(named: images[index]))
         
-        return view
+        let imageView = UIImageView()
+        let user = users[index]
+        let storage = Storage.storage()
+        let storageRef = storage.reference(withPath: "\(user.userId!)/photos/\(0)")
+        PhotoUploader.downloadImageUrl(from: storageRef) { (url) in
+            guard let url = url else { return }
+            imageView.downloaded(from: url, contentMode: .scaleAspectFill)
+        }
+        
+        return imageView
     }
     
     func kolodaNumberOfCards(_ koloda: KolodaView) -> Int {
-        return images.count
+        return users.count
     }    
     
-}
-
-// Swipe gesture responses
-
-func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-
-    if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-
-
-        switch swipeGesture.direction {
-        case UISwipeGestureRecognizer.Direction.right:
-                print("Let's meet")
-        case UISwipeGestureRecognizer.Direction.down:
-                print("My radius")
-        case UISwipeGestureRecognizer.Direction.left:
-                print("No")
-            default:
-                break
+    func koloda(_ koloda: KolodaView, didSwipeCardAt index: Int, in direction: SwipeResultDirection) {
+        switch direction {
+        case .left: print("No")
+        case .right: print("YES")
+        default: print("Ignore")
         }
+        
+        // Pull Data From Firebase For New User
+        let user = users[index]
+        nameLbl.text = user.firstName
+        ageData.text = user.birthday
+        heightData.text = user.height
+        kidsData.text = user.kids
+        familyPlansData.text = user.familyPlans
+        occupationData.text = user.jobTitle
+        homeTownData.text = user.homeTown
+        politicsData.text = user.politics
+        religionData.text = user.religiousBeliefs
+        ethnicityData.text = user.ethnicity
+        drinkingData.text = user.drink
+        schoolData.text = user.school
+        educationData.text = user.educationLevel
+        
+        
     }
 }
