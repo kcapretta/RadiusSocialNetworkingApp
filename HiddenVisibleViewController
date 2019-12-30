@@ -1,0 +1,20 @@
+//
+//  HiddenVisibleViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 12/30/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+
+class HiddenVisibleViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+    
+    }
+
+
+}
