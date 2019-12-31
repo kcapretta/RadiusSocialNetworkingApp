@@ -2,7 +2,7 @@
 
 *Release Date: January 5th*
 
-Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new connections by designing a way to connect with people you're already around within a bar, coffee shop, or other commerical establishments. 
+Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new connections by designing a way to connect with people you're already around within a bar, coffee shop, or other commercial establishments. 
 
 These are the main functions of the application:
 
