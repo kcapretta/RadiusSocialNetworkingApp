@@ -7,9 +7,21 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseDatabase
 
 class HiddenVisibleViewController: UIViewController {
 
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBAction func backTapped(_ sender: Any) {
+        dismiss(animated: true)
+    }
+    
+    // Pull data from Firebase
+    var ref:DatabaseReference?
+    var databaseHandle:DatabaseHandle?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
