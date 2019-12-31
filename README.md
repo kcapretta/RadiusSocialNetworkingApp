@@ -54,7 +54,7 @@ The code concept is listed below (see also "RadiusConceptFile.swift"):
  6. Answer Questions
  7. Edit Profile
  
- 1. Login / Forgot Passowrd
+ 1. Login / Forgot Password
  2. Radius Screen (geofencing bars and coffee shops)
  3. Select Radius / Swipe Screen
  4. Match / Deny
