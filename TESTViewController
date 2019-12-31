@@ -1,0 +1,118 @@
+//
+//  TESTViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 12/30/19.
+//  Copyright © 2019 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+import Firebase
+
+class TESTViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        <#code#>
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        <#code#>
+    }
+    
+    
+    @IBOutlet weak var collectionView: TESTView!
+    
+    let array:[String?] = []
+    
+    // Block Button
+    var currentUserId = Auth.auth().currentUser?.uid
+    var otherUserId = "whatever" // you should already have this
+    var isCurrentUserBlocked = false
+    var isOtherUserBlocked = false
+
+    override func viewDidLoad() {
+    super.viewDidLoad()
+        
+        let itemSize = UIScreen.main.bounds.width/3 - 10
+        layout.itemSize = CGSize(width: itemSize, height: itemSize)
+        
+        layout.minimumInteritemSpacing = 3
+        layout.minimumLineSpacing = 3
+        
+        myCollectionView.collectionViewLayout = layout
+    
+    }
+    
+    override func viewDidLoad() {
+    super.viewDidLoad()
+        
+    // Block User Button
+    @IBAction func blockTapped(_ sender: UIButton) {
+        
+        if isOtherUserBlocked {
+                // alert the current user that they blocked the other user
+                return
+            }
+
+            if isCurrentUserBlocked {
+                // alert the current user that the other user blocked them
+                return
+            }
+
+            // if neither are true then let the current user send their message to the other user
+        }
+
+
+        func checkBlockedRefsForBothUsers() {
+
+            let currentUsersBlockedRef = Database.database().reference().child("blocked").child(currentUserId!)
+            currentUsersBlockedRef?.observe( .value, with: { (snapshot) in
+
+                // if the current user ISN'T under the blocked ref then the other user ISN'T blocked
+                if !snapshot.exists() {
+                    self.isOtherUserBlocked = false
+                    return
+                }
+
+                for child in snapshot.children {
+                    let snap = child as! DataSnapshot
+
+                    // if the other user's uid IS under the current user's blocked ref then the other user IS blocked from them
+                    if snap.key == self.otherUsersId {
+                        self.isOtherUserBlocked = true
+                        break
+                    }
+
+                     // if the other user's uid ISN'T under the current user's blocked ref then the other user ISN'T blocked
+                    self.isOtherUserBlocked = false
+                }
+            })
+
+            let otherUsersBlockedRef = Database.database().reference().child("blocked").child(otherUserId)
+            otherUsersBlockedRef?.observe( .value, with: { (snapshot) in
+
+                // if the other user's uid ISN'T under the blocked ref then the current user ISN'T blocked
+                if !snapshot.exists() {
+                    self.isCurrentUserBlocked = false
+                    return
+                }
+
+                for child in snapshot.children {
+
+                    let snap = child as! DataSnapshot
+
+                    // if the current user's uid IS under the other user's blocked ref then the current user IS blocked from them
+                    if snap.key == self.currentUserId {
+                        self.isCurrentUserBlocked = true
+                        break
+                    }
+
+                     // if the current user's uid ISN'T under the other user's blocked ref then the current user ISN'T blocked
+                    self.isCurrentUserBlocked = false
+                }
+            })
+        }
+        
+    }
+
+        
+}
