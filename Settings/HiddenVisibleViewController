@@ -9,24 +9,103 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
+import FirebaseStorage
 
 class HiddenVisibleViewController: UIViewController {
 
+    // Pull data from Firebase
+    var ref:DatabaseReference?
+    var databaseHandle:DatabaseHandle?
+    
+    @IBAction func doneButtonTapped(_ sender: Any) {
+        
+        var gender = genderOutlet
+        var ethnicity = ethnicityOutlet
+        var kids = kidsOutlet
+        var familyPlans = familyPlansOutlet
+        var hometown = homeTownOutlet
+        var jobTitle = jobTitleOutlet
+        var religion = religionOutlet
+        var education = educationOutlet
+        var school = schoolOutlet
+        var politics = politicsOutlet
+        var drinking = drinkingOutlet
+        
+    }
+    
+    @IBOutlet weak var genderOutlet: UISegmentedControl!
+    @IBOutlet weak var ethnicityOutlet: UISegmentedControl!
+    @IBOutlet weak var kidsOutlet: UISegmentedControl!
+    @IBOutlet weak var familyPlansOutlet: UISegmentedControl!
+    @IBOutlet weak var homeTownOutlet: UISegmentedControl!
+    @IBOutlet weak var jobTitleOutlet: UISegmentedControl!
+    @IBOutlet weak var religionOutlet: UISegmentedControl!
+    @IBOutlet weak var educationOutlet: UISegmentedControl!
+    @IBOutlet weak var schoolOutlet: UISegmentedControl!
+    @IBOutlet weak var politicsOutlet: UISegmentedControl!
+    @IBOutlet weak var drinkingOutlet: UISegmentedControl!
+    
+    @IBAction func genderButton(_ sender: Any) {
+        // gender.isHidden = true
+    }
+    
+    @IBAction func ethnicityButton(_ sender: Any) {
+    }
+    
+    @IBAction func kidsButton(_ sender: Any) {
+    }
+    
+    @IBAction func familyPlansButton(_ sender: Any) {
+    }
+    
+    @IBAction func homeTownButton(_ sender: Any) {
+    }
+    
+    @IBAction func jobTitleButton(_ sender: Any) {
+    }
+
+    @IBAction func religionButton(_ sender: Any) {
+    }
+    
+    @IBAction func educationButton(_ sender: Any) {
+    }
+    
+    @IBAction func schoolButton(_ sender: Any) {
+    }
+    
+    @IBAction func politicsButton(_ sender: Any) {
+    }
+    
+    @IBAction func drinkingButton(_ sender: Any) {
+    }
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     @IBAction func backTapped(_ sender: Any) {
         dismiss(animated: true)
     }
     
-    // Pull data from Firebase
-    var ref:DatabaseReference?
-    var databaseHandle:DatabaseHandle?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //updateUIWithUserInfo()
     
     }
+    
+    func updateUIWithUserInfo() {
+        // Pulling Data from Firebase
+        
+        //genderOutlet = newUser.gender
+    }
 
+    //if ref[indexPath] {
+    
+    }
+    
+//    else {
+//
+//    label.hideLabel()
+//
+//    }
 
-}
+// }
