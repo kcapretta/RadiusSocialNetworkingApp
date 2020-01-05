@@ -15,6 +15,9 @@ import FirebaseStorage
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var datingOutlet: UILabel!
+    @IBOutlet weak var networkingOutlet: UILabel!
+    @IBOutlet weak var friendshipOutlet: UILabel!
     
     @IBOutlet weak var infoCollectionView: UICollectionView!
     
@@ -47,6 +50,8 @@ class ViewController: UIViewController {
     
     var userDetails: [[UserDetail: String]] = []
     
+    // Post
+    var postData = [UISwitch]()
     
 
     func filterBlockedUsers(from users: [LocalUser]) {
@@ -69,6 +74,15 @@ class ViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Dating / Networking / Friendship
+        //setDefaultSelections()
+        
+        // Dating / Networking / Friendship Label Look
+        self.datingOutlet.layer.cornerRadius = 10
+        self.networkingOutlet.layer.cornerRadius = 10
+        self.friendshipOutlet.layer.cornerRadius = 10
+        
         infoCollectionView.dataSource = self
         infoCollectionView.delegate = self
         cardView.delegate = self
@@ -107,6 +121,20 @@ class ViewController: UIViewController {
         //self.view.addGestureRecognizer(swipeDown)
     }
     
+//    func setDefaultSelections() {
+//        if let interests = newUser.interestedIn?.value {
+//            interests.forEach { (interestedIn) in
+//                switch interestedIn {
+//                case .dating: datingSwitched.isOn = true
+//                case .networking: networkingSwitched.isOn = true
+//                case .friendship: friendshipSwitched.isOn = true
+//                }
+//            }
+//        }
+//
+//    }
+
+    
     func loadFirstUser() {
         if users.count > 0 {
             let imageView = UIImageView()
@@ -137,6 +165,10 @@ class ViewController: UIViewController {
         let school = user.school
         let religion = user.religiousBeliefs
         let education = user.educationLevel
+        
+//        let dating = user.dating
+//        let networking = user.networking
+//        let friendship = user.friendship
         
         if let visible = jobTitle?.visible, visible {
             userDetails.append([.jobTitle: jobTitle!.value.description])
@@ -191,8 +223,8 @@ class ViewController: UIViewController {
     
     @IBAction func radiusNextVC(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let loginVC = storyboard.instantiateViewController(identifier: "loginViewController")
-                self.navigationController?.pushViewController(loginVC, animated: true)
+                let radiusVC = storyboard.instantiateViewController(identifier: "GeotificationsViewController")
+                self.navigationController?.pushViewController(radiusVC, animated: true)
            
 
         let vc = CustomTabBarViewController()
@@ -244,6 +276,8 @@ extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
     func koloda(_ koloda: KolodaView, viewForCardAt index: Int) -> UIView {
         
         let imageView = UIImageView()
+        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
         let user = users[index]
         let storage = Storage.storage()
         let storageRef = storage.reference(withPath: "\(user.userId!)/photos/\(0)")
@@ -310,10 +344,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlow
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-      let padding: CGFloat = 30
+      let padding: CGFloat = 8
       let collectionCellSize = collectionView.frame.size.width - padding
 
-    return CGSize(width: collectionCellSize/2, height:50)
+    return CGSize(width: collectionCellSize/1, height:22)
 
      }
     
@@ -337,5 +371,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlow
         }
      }
 }
+
 
 
