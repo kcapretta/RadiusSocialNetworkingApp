@@ -15,6 +15,7 @@ import FirebaseStorage
 
 class ViewController: UIViewController {
     
+    // This Feature is Coming Soon!
     @IBOutlet weak var datingOutlet: UILabel!
     @IBOutlet weak var networkingOutlet: UILabel!
     @IBOutlet weak var friendshipOutlet: UILabel!
@@ -56,32 +57,39 @@ class ViewController: UIViewController {
 
     func filterBlockedUsers(from users: [LocalUser]) {
         var notBlockedUsers = users
+        var notBlockedUsersDict = self.usersDict
         var blockedUsers = newUser.blocked ?? [:]
         if let currentUserId = Auth.auth().currentUser?.uid {
             blockedUsers[currentUserId] = true
-            usersDict[currentUserId] = newUser
         }
         
         for (userId, blocked) in blockedUsers ?? [:] {
+            print("UserId...", userId)
+            print("UserHere...", usersDict[userId])
             if let user = usersDict[userId] {
-                if let blockedUserIndex = notBlockedUsers.firstIndex(where: { $0.userId == userId }) {
+                notBlockedUsersDict.removeValue(forKey: userId)
+                /*if let blockedUserIndex = notBlockedUsers.firstIndex(where: { $0.userId! == userId }) {
                     notBlockedUsers.remove(at: blockedUserIndex)
-                }
+                }*/
             }
         }
-        // THINGS GO HERE
-        self.users = notBlockedUsers
+        let notBlocked = Array(notBlockedUsersDict.values)
+        self.users = notBlocked
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        infoCollectionView.flashScrollIndicators()
+        
+        // This Feature is Coming Soon!
+        
         // Dating / Networking / Friendship
-        //setDefaultSelections()
+        // setDefaultSelections()
         
         // Dating / Networking / Friendship Label Look
-        self.datingOutlet.layer.cornerRadius = 10
-        self.networkingOutlet.layer.cornerRadius = 10
-        self.friendshipOutlet.layer.cornerRadius = 10
+        //        self.datingOutlet.layer.cornerRadius = 10
+        //        self.networkingOutlet.layer.cornerRadius = 10
+        //        self.friendshipOutlet.layer.cornerRadius = 10
         
         infoCollectionView.dataSource = self
         infoCollectionView.delegate = self
@@ -89,6 +97,7 @@ class ViewController: UIViewController {
         cardView.dataSource = self
         
         firebaseServer.fetchUsers {[weak self] (usersDict) in
+            self?.usersDict = usersDict
             let fetchedUsers = Array(usersDict.values)
             self?.filterBlockedUsers(from: fetchedUsers)
             self?.loadFirstUser()
@@ -120,6 +129,8 @@ class ViewController: UIViewController {
         swipeDown.direction = UISwipeGestureRecognizer.Direction.down
         //self.view.addGestureRecognizer(swipeDown)
     }
+    
+    // This Feature is Coming Soon!
     
 //    func setDefaultSelections() {
 //        if let interests = newUser.interestedIn?.value {
@@ -166,6 +177,7 @@ class ViewController: UIViewController {
         let religion = user.religiousBeliefs
         let education = user.educationLevel
         
+        // This Feature is Coming Soon!
 //        let dating = user.dating
 //        let networking = user.networking
 //        let friendship = user.friendship
@@ -244,8 +256,6 @@ class ViewController: UIViewController {
         return age!
     }
     
-    // Swipe gesture responses
-
     @objc
     func respondToSwipeGesture(gesture: UIGestureRecognizer) {
 
@@ -309,17 +319,6 @@ extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
         
         nameLbl.text = user.firstName
         
-//        if let dob = user.birthday?.value {
-//            birthday.text = "\(calcAge(birthday: dob))"
-//        }
-        
-//        let now = Date()
-//        //let birthday: Date = birthday?
-//        let calendar = Calendar.current
-//        ageData.text = user.birthday?.value
-//        let ageComponents = calendar.dateComponents([.year], from: String?, to: now)
-//        let age = ageComponents.year!
-        
     }
 }
 extension ViewController: UICollectionViewDataSource {
@@ -350,27 +349,18 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlow
     return CGSize(width: collectionCellSize/1, height:22)
 
      }
-    
-    
-
-     // Block Button
-
-//     override func viewDidLoad() {
-//     super.viewDidLoad()
-//
-//     }
 
      // Block User Button
      @IBAction func blockTapped(_ sender: UIButton) {
         if let userIdToBlock = currentlyViewedUserId {
-            firebaseServer.blockSomeone(with: userIdToBlock) { (error) in
+            firebaseServer.blockSomeone(with: userIdToBlock) {[weak self] (error) in
                 if error == nil {
                     newUser.blocked?[userIdToBlock] = true
+                    self?.cardView.swipe(.left)
                 }
             }
         }
      }
 }
-
 
 
