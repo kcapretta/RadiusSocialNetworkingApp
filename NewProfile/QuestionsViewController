@@ -42,6 +42,17 @@ class QuestionsViewController: UIViewController {
                 print("Fill in all fields...")
                 return }
         
+        if question1.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+              question2.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+              question3.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            question4.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            question5.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+        question6.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+              
+              showAlert(withTitle: "Error", message: "Please fill in all fields")
+              return }
+        
+        
         let lifeGoalInfo = UserInfo(type: "lifeGoal", value: lifeGoal, visible: true)
         let teachMeInfo = UserInfo(type: "teachMe", value: teachMe, visible: true)
         let changeMindInfo = UserInfo(type: "changeMind", value: changeMind, visible: true)
@@ -67,7 +78,44 @@ class QuestionsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        createToolbar()
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = ""
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
         Utilities.styleFilledButton(doneButton1)
         
     }
+    
+    // Toolbar for "Done" on Picker View
+        func createToolbar() {
+            let toolBar = UIToolbar()
+            toolBar.sizeToFit()
+            
+            let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(QuestionsViewController.dismissKeyboard))
+            
+            toolBar.setItems([doneButton], animated: false)
+            toolBar.isUserInteractionEnabled = true
+
+    // Make Toolbar work for Gender, Birthday and Religion
+            question1.inputAccessoryView = toolBar
+            question2.inputAccessoryView = toolBar
+            question3.inputAccessoryView = toolBar
+            question4.inputAccessoryView = toolBar
+            question5.inputAccessoryView = toolBar
+            question6.inputAccessoryView = toolBar
+        }
+        
+        @objc func dismissKeyboard() {
+            view.endEditing(true)
+        }
+        
+        @objc func viewTapped(gestureRecognizer: UITapGestureRecognizer) {
+        view.endEditing(true)
+        }
+  
 }
+        
+
+
