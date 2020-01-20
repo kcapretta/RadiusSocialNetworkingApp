@@ -8,57 +8,93 @@
 
 import UIKit
 import Firebase
+import MessageUI
+import ProgressHUD
 
-class PopUpViewController: UIViewController {
+//var currentlyViewedUserId: String?
+//
+//var usersDict: [String: LocalUser] = [:]
+//var users: [LocalUser] = []
+//
+//var userDetails: [[UserDetail: String]] = []
+// Post
+//var postData = [UISwitch]()
+//let firebaseServer = FirebaseFunctions.shared
 
-    @IBOutlet weak var yesOutlet: UIButton!
+class PopUpViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
-    @IBOutlet weak var cancelOutlet: UIButton!
+    @IBOutlet weak var sendTapped: UIButton!
+    
+    @IBOutlet weak var cancelTapped: UIButton!
     
     @IBOutlet weak var myView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       
 
-        Utilities.styleHollowButton(yesOutlet)
-        Utilities.styleHollowButton(cancelOutlet)
+        Utilities.styleHollowButton(sendTapped)
+        Utilities.styleHollowButton(cancelTapped)
         
         // Animate View
-        func showAnimate()
-        {
-            self.myView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-            self.myView.alpha = 0.0;
-            UIView.animate(withDuration: 0.25, animations: {
-                self.myView.alpha = 1.0
-                self.myView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-            });
-        }
-        
-        func removeAnimate()
-        {
-            UIView.animate(withDuration: 0.25, animations: {
+            func showAnimate()
+            {
                 self.myView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
                 self.myView.alpha = 0.0;
-            }, completion:{(finished : Bool) in if (finished)
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.myView.alpha = 1.0
+                    self.myView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                });
+            }
+            
+            func removeAnimate()
             {
-                self.myView.removeFromSuperview()
-                }
-            });
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.myView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+                    self.myView.alpha = 0.0;
+                }, completion:{(finished : Bool) in if (finished)
+                {
+                    self.myView.removeFromSuperview()
+                    }
+                });
+            }
+            
+            // Shadow on View
+            self.myView.layer.shadowColor = UIColor.gray.cgColor
+            self.myView.layer.shadowOpacity = 0.5
+            self.myView.layer.shadowOffset = CGSize(width: 2, height: 2)
+            self.myView.layer.shadowRadius = 6
+            self.myView.layer.masksToBounds = false
         }
-        // Shadow on View
-        self.myView.layer.shadowColor = UIColor.gray.cgColor
-        self.myView.layer.shadowOpacity = 0.5
-        self.myView.layer.shadowOffset = CGSize(width: 2, height: 2)
-        self.myView.layer.shadowRadius = 4
-        self.myView.layer.masksToBounds = false
+        
+    @IBAction func sendReport(_ sender: Any) {
+        let mailComposeViewController = configureMailController()
+        if MFMailComposeViewController.canSendMail() {
+            self.present(mailComposeViewController, animated:true, completion: nil) }
+        else {
+            showMailError()
+        }
+
     }
     
-    @IBAction func yesTapped(_ sender: UIButton) {
+    func configureMailController() -> MFMailComposeViewController {
+        let mailComposerVC = MFMailComposeViewController()
+        mailComposerVC.mailComposeDelegate = self
+        
+        mailComposerVC.setToRecipients(["RadiusAppHelp@gmail.com"])
+        mailComposerVC.setSubject("Reporting user")
+        mailComposerVC.setMessageBody("Please include as much detail as possible:", isHTML: false)
+        
+        return mailComposerVC
     }
     
-    @IBAction func cancelTapped(_ sender: UIButton) {
-        }
+    func showMailError() {
+        let sendMailErrorAlert = showAlert(withTitle: "Could not send message", message: "Please try again")
+        let dismiss = UIAlertAction(title: "Okay", style: .default, handler: nil)
+//        sendMailErrorAlert.addAction(dismiss)
+//        self.present(sendMailErrorAlert, animated: true, completion: nil)
+    }
     
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
 }
