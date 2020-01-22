@@ -29,6 +29,7 @@ class signupViewController: UIViewController {
     @IBOutlet weak var errorLabel: UILabel!
     
     let firebaseServer = FirebaseFunctions.shared
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,35 +54,50 @@ class signupViewController: UIViewController {
     }
     
     // Check fields and validate
-    func validateFields() -> String? {
-        
-        if firstNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-            lastNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-            emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-            passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-            
-            return "Please fill in all fields"
-        }
-        
-        // Check if the password is secure
-            let cleanedPassword = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            if Utilities.isPasswordValid(cleanedPassword) == false {
-                // Password isn't secure enough
-                return "Please make sure your password is at least 8 characters, contains a special character and a number."
-            }
-            
-            return nil
-
-
-       
-    }
-    @IBAction func signupTapped(_ sender: Any) {
+//    func validateFields() -> String? {
+//
+//        if firstNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+//            lastNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+//            emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+//            passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == ""
+//        {
+//
+//            print("Fill in all fields")
+//
+//        }
+//
+//
+//        // Check if the password is secure
+//            let cleanedPassword = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+//
+//            if Utilities.isPasswordValid(cleanedPassword) == false {
+//                // Password isn't secure enough
+//                return "Please make sure your password is at least 8 characters, contains a special character and a number."
+//            }
+//
+//            return nil }
     
-            let firstName = firstNameTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let lastName = lastNameTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+    @IBAction func signupTapped(_ sender: Any) {
+        
+        guard var firstName = firstNameTextField.text,
+            var lastName = lastNameTextField.text,
+            var email = emailTextField.text,
+            var password = passwordTextField.text else {
+                print("Fill in all fields")
+                return
+        }
+            
+        if firstName.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+        
+        lastName.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+        
+        email.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+        
+        password.trimmingCharacters(in: .whitespacesAndNewlines) == ""
+            {
+            showAlert(withTitle: "Error", message: "Please fill in all fields")
+        return }
+        
         
         // Create the user, process data and go to next View Controller
         activityIndicator.startAnimating()
@@ -90,6 +106,9 @@ class signupViewController: UIViewController {
             if let user = user {
                 newUser = user
             }
+            
+            
+            
             if(error == nil) {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let signupVC = storyboard.instantiateViewController(identifier: "introductionTextViewController")
