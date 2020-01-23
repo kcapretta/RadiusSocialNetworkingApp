@@ -1,0 +1,94 @@
+//
+//  RadiusLocationViewController.swift
+//  Radius
+//
+//  Created by Kassandra Capretta on 1/22/20.
+//  Copyright © 2020 Kassandra Capretta. All rights reserved.
+//
+
+import UIKit
+import CoreLocation
+import MapKit
+
+class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+
+    @IBOutlet weak var mapView: MKMapView!
+    
+    var locationManager : CLLocationManager = CLLocationManager()
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+      mapView.showsUserLocation = (status == .authorizedAlways)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+      print("")
+    //Good place to schedule a local notification
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+    print("Bye! Hope you had a great day at the beach!")
+    //Good place to schedule a local notification
+    }
+    
+    func region(with geotification: Geotification) -> CLCircularRegion {
+      // 1
+      let region = CLCircularRegion(center: geotification.coordinate,
+        radius: geotification.radius,
+        identifier: geotification.identifier)
+      // 2
+      region.notifyOnEntry = (geotification.eventType == .onEntry)
+      region.notifyOnExit = !region.notifyOnEntry
+      return region
+    }
+
+    func startMonitoring(geotification: Geotification) {
+      // 1
+      if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+        showAlert(withTitle:"Error", message: "Geofencing is not supported on this device!")
+        return
+      }
+      // 2
+      if CLLocationManager.authorizationStatus() != .authorizedAlways {
+        let message = """
+          Your geotification is saved but will only be activated once you grant
+          Geotify permission to access the device location.
+          """
+        showAlert(withTitle:"Warning", message: message)
+      }
+      // 3
+      let fenceRegion = region(with: geotification)
+      // 4
+      locationManager.startMonitoring(for: fenceRegion)
+    }
+    
+    func stopMonitoring(geotification: Geotification) {
+      for region in locationManager.monitoredRegions {
+        guard let circularRegion = region as? CLCircularRegion,
+          circularRegion.identifier == geotification.identifier else { continue }
+        locationManager.stopMonitoring(for: circularRegion)
+      }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.delegate = self as CLLocationManagerDelegate
+        
+        //Zoom to user location
+        if let userLocation = locationManager.location?.coordinate {
+            let viewRegion = MKCoordinateRegion(center: userLocation, latitudinalMeters: 200, longitudinalMeters: 200)
+            mapView.setRegion(viewRegion, animated: false)
+        }
+        
+        func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+          if (status == CLAuthorizationStatus.authorizedAlways) {
+          }
+        }
+        
+    }
+    
+}
