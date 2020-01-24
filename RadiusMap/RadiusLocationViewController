@@ -21,13 +21,11 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-      print("")
-    //Good place to schedule a local notification
+             showAlert(withTitle: "You've entered \(region.identifier)", message: "Happy hopping!")
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-    print("Bye! Hope you had a great day at the beach!")
-    //Good place to schedule a local notification
+           showAlert(withTitle: "You've exited \(region.identifier)", message: "")
     }
     
     func region(with geotification: Geotification) -> CLCircularRegion {
@@ -72,6 +70,8 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupData()
+        mapView.userTrackingMode = .follow
         mapView.delegate = self
         mapView.showsUserLocation = true
 
@@ -89,6 +89,43 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
           }
         }
         
+    }
+    
+    func setupData() {
+        // 1. check if system can monitor regions
+        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+     
+            // 2. region data
+            let title = "Marina Bar Hop"
+            let coordinate = CLLocationCoordinate2DMake(33.97823607957177, -118.43823725357653)
+            let regionRadius = 300.0
+     
+            // 3. setup region
+            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude,
+                longitude: coordinate.longitude), radius: regionRadius, identifier: title)
+            locationManager.startMonitoring(for: region)
+     
+            // 4. setup annotation
+            let restaurantAnnotation = MKPointAnnotation()
+            restaurantAnnotation.coordinate = coordinate;
+            restaurantAnnotation.title = "\(title)";
+            mapView.addAnnotation(restaurantAnnotation)
+     
+            // 5. setup circle
+            let circle = MKCircle(center: coordinate, radius: regionRadius)
+            mapView.addOverlay(circle)
+        }
+        else {
+            print("System can't track regions")
+        }
+    }
+     
+    // 6. draw circle
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let circleRenderer = MKCircleRenderer(overlay: overlay)
+        circleRenderer.strokeColor = UIColor.red
+        circleRenderer.lineWidth = 1.0
+        return circleRenderer
     }
     
 }
