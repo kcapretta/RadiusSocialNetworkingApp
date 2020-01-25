@@ -1,5 +1,5 @@
 //
-//  RadiusMapViewController.swift
+//  RadiusMapLocationViewController.swift
 //  Radius
 //
 //  Created by Kassandra Capretta on 1/25/20.
@@ -10,29 +10,28 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class RadiusMapViewController: UIViewController, MKMapViewDelegate {
+class RadiusMapLocationViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
-    
     let coordinate = CLLocationCoordinate2DMake(33.97823607957177, -118.43823725357653)
-    
+
     var locationManager : CLLocationManager = CLLocationManager()
-    
+
     // Authorize use of location
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
       mapView.showsUserLocation = (status == .authorizedAlways)
     }
-    
+
     // Entering region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
              showAlert(withTitle: "You've entered \(region.identifier)", message: "Happy hopping!")
     }
-    
+
     // Exiting region
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
            showAlert(withTitle: "You've exited \(region.identifier)", message: "")
     }
-    
+
     // Creating region and notifying when exit / enter
     func region(with geotification: Geotification) -> CLCircularRegion {
       let region = CLCircularRegion(center: geotification.coordinate,
@@ -42,7 +41,7 @@ class RadiusMapViewController: UIViewController, MKMapViewDelegate {
       region.notifyOnExit = !region.notifyOnEntry
       return region
     }
-    
+
     // Monitoring region, if not "error"
        func startMonitoring(geotification: Geotification) {
          if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
@@ -50,7 +49,7 @@ class RadiusMapViewController: UIViewController, MKMapViewDelegate {
            return
          }
     }
-       
+
        func stopMonitoring(geotification: Geotification) {
          for region in locationManager.monitoredRegions {
            guard let circularRegion = region as? CLCircularRegion,
@@ -58,15 +57,15 @@ class RadiusMapViewController: UIViewController, MKMapViewDelegate {
            locationManager.stopMonitoring(for: circularRegion)
          }
        }
-        
+
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         mapView.userTrackingMode = .follow
         mapView.showsUserLocation = true
-        
+
         // Region of coordinate
-        mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 800, longitudinalMeters: 800)
 
         mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
 
@@ -79,10 +78,10 @@ class RadiusMapViewController: UIViewController, MKMapViewDelegate {
         let regionRadius = 300.0
         let circle = MKCircle(center: coordinate, radius: regionRadius)
         mapView.addOverlay(circle)
-        
+
         self.locationManager.requestAlwaysAuthorization()
         self.locationManager.delegate = self as? CLLocationManagerDelegate
-        
+
         //Zoom to user location
         if let userLocation = locationManager.location?.coordinate {
             let viewRegion = MKCoordinateRegion(center: userLocation, latitudinalMeters: 200, longitudinalMeters: 200)
@@ -97,4 +96,3 @@ class RadiusMapViewController: UIViewController, MKMapViewDelegate {
         return circleRenderer
     }
 }
-
