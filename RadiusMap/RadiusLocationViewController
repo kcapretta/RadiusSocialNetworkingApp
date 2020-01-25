@@ -1,8 +1,8 @@
 //
-//  RadiusLocationViewController.swift
+//  TestLocationViewController.swift
 //  Radius
 //
-//  Created by Kassandra Capretta on 1/22/20.
+//  Created by Kassandra Capretta on 1/25/20.
 //  Copyright © 2020 Kassandra Capretta. All rights reserved.
 //
 
@@ -10,42 +10,47 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class TestLocationViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
+    let coordinate = CLLocationCoordinate2DMake(33.97823607957177, -118.43823725357653)
+    
     var locationManager : CLLocationManager = CLLocationManager()
     
+    // Authorize use of location
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
       mapView.showsUserLocation = (status == .authorizedAlways)
     }
     
+    // Entering region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
              showAlert(withTitle: "You've entered \(region.identifier)", message: "Happy hopping!")
     }
     
+    // Exiting region
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
            showAlert(withTitle: "You've exited \(region.identifier)", message: "")
     }
     
+    // Creating region and notifying when exit / enter
     func region(with geotification: Geotification) -> CLCircularRegion {
-      // 1
       let region = CLCircularRegion(center: geotification.coordinate,
         radius: geotification.radius,
         identifier: geotification.identifier)
-      // 2
       region.notifyOnEntry = (geotification.eventType == .onEntry)
       region.notifyOnExit = !region.notifyOnEntry
       return region
     }
 
+    // Monitoring region, if not "error"
     func startMonitoring(geotification: Geotification) {
-      // 1
       if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
         showAlert(withTitle:"Error", message: "Geofencing is not supported on this device!")
         return
       }
-      // 2
+      
+        // Might not be needed
       if CLLocationManager.authorizationStatus() != .authorizedAlways {
         let message = """
           Your geotification is saved but will only be activated once you grant
@@ -53,12 +58,13 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
           """
         showAlert(withTitle:"Warning", message: message)
       }
-      // 3
+      
       let fenceRegion = region(with: geotification)
-      // 4
+      
       locationManager.startMonitoring(for: fenceRegion)
     }
     
+    // Might not be needed
     func stopMonitoring(geotification: Geotification) {
       for region in locationManager.monitoredRegions {
         guard let circularRegion = region as? CLCircularRegion,
@@ -70,11 +76,24 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupData()
+        //setupData()
         mapView.userTrackingMode = .follow
         mapView.delegate = self
         mapView.showsUserLocation = true
+        
+        // Region of coordinate
+        mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        
+        let title = "Marina Bar Hop"
+        let restaurantAnnotation = MKPointAnnotation()
+        restaurantAnnotation.coordinate = coordinate
+        restaurantAnnotation.title = title
+        mapView.addAnnotation(restaurantAnnotation)
 
+        let regionRadius = 300.0
+        let circle = MKCircle(center: coordinate, radius: regionRadius)
+        mapView.addOverlay(circle)
+        
         self.locationManager.requestAlwaysAuthorization()
         self.locationManager.delegate = self as CLLocationManagerDelegate
         
@@ -84,74 +103,14 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
             mapView.setRegion(viewRegion, animated: false)
         }
         
-        func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-          if (status == CLAuthorizationStatus.authorizedAlways) {
-          }
+        // mapView Function
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            let circleRenderer = MKCircleRenderer(overlay: overlay)
+            circleRenderer.strokeColor = UIColor.red
+            circleRenderer.lineWidth = 1.0
+            return circleRenderer
         }
-        
-        // 6. draw circle
-           func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-               let circleRenderer = MKCircleRenderer(overlay: overlay)
-               circleRenderer.strokeColor = UIColor.red
-               circleRenderer.lineWidth = 1.0
-               return circleRenderer
-           }
-    
-        
-    }
-    
-    func setupData() {
-        // 1. check if system can monitor regions
-        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-     
-            // 2. region data
-            let title = "Hill & West 5th Bar Hop"
-            let coordinate = CLLocationCoordinate2DMake(34.0487507009847, -118.25143799185756)
-            let regionRadius = 300.0
-     
-            // 3. setup region
-            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude,
-                longitude: coordinate.longitude), radius: regionRadius, identifier: title)
-            locationManager.startMonitoring(for: region)
-     
-            // 4. setup annotation
-            let restaurantAnnotation = MKPointAnnotation()
-            restaurantAnnotation.coordinate = coordinate;
-            restaurantAnnotation.title = "\(title)";
-            mapView.addAnnotation(restaurantAnnotation)
-     
-            // 5. setup circle
-            let circle = MKCircle(center: coordinate, radius: regionRadius)
-            mapView.addOverlay(circle)
-            
-        }
-        else {
-            print("System can't track regions")
-        }
+          
     }
     
 }
-
-
-
-
-//    let directions = MKDirections(request: directionsRequest)
-//    directions.calculateDirectionsWithCompletionHandler { (directionsResponse, error) -> Void in
-//        if let error = error {
-//            println("Error getting directions: \(error.localizedDescription)")
-//        } else {
-//            let route = directionsResponse.routes[0] as! MKRoute
-//            // draw the route in the map
-//            self.mapView.addOverlay(route.polyline)
-//
-//            // get the next closest location
-//            let closestLocation = self.getClosestLocation(toLocationCoord, locations: self.coordinates)
-//            if let closest = closestLocation {
-//                self.getDirections(fromLocationCoord: toLocationCoord, toLocationCoord: closest)
-//            }
-//
-//            // remove the current location's coordinates from the array
-//            self.coordinates = self.coordinates.filter({ $0 != toLocationCoord })
-//        }
-//    }
-//}
