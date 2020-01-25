@@ -1,5 +1,5 @@
 //
-//  TestLocationViewController.swift
+//  RadiusMapViewController.swift
 //  Radius
 //
 //  Created by Kassandra Capretta on 1/25/20.
@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class TestLocationViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class RadiusMapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
@@ -42,48 +42,34 @@ class TestLocationViewController: UIViewController, CLLocationManagerDelegate, M
       region.notifyOnExit = !region.notifyOnEntry
       return region
     }
-
+    
     // Monitoring region, if not "error"
-    func startMonitoring(geotification: Geotification) {
-      if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-        showAlert(withTitle:"Error", message: "Geofencing is not supported on this device!")
-        return
-      }
-      
-        // Might not be needed
-      if CLLocationManager.authorizationStatus() != .authorizedAlways {
-        let message = """
-          Your geotification is saved but will only be activated once you grant
-          Geotify permission to access the device location.
-          """
-        showAlert(withTitle:"Warning", message: message)
-      }
-      
-      let fenceRegion = region(with: geotification)
-      
-      locationManager.startMonitoring(for: fenceRegion)
+       func startMonitoring(geotification: Geotification) {
+         if !CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+           showAlert(withTitle:"Error", message: "Geofencing is not supported on this device!")
+           return
+         }
     }
-    
-    // Might not be needed
-    func stopMonitoring(geotification: Geotification) {
-      for region in locationManager.monitoredRegions {
-        guard let circularRegion = region as? CLCircularRegion,
-          circularRegion.identifier == geotification.identifier else { continue }
-        locationManager.stopMonitoring(for: circularRegion)
-      }
-    }
-    
+       
+       func stopMonitoring(geotification: Geotification) {
+         for region in locationManager.monitoredRegions {
+           guard let circularRegion = region as? CLCircularRegion,
+             circularRegion.identifier == geotification.identifier else { continue }
+           locationManager.stopMonitoring(for: circularRegion)
+         }
+       }
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //setupData()
-        mapView.userTrackingMode = .follow
         mapView.delegate = self
+        mapView.userTrackingMode = .follow
         mapView.showsUserLocation = true
         
         // Region of coordinate
         mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        
+
+        mapView.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+
         let title = "Marina Bar Hop"
         let restaurantAnnotation = MKPointAnnotation()
         restaurantAnnotation.coordinate = coordinate
@@ -95,22 +81,20 @@ class TestLocationViewController: UIViewController, CLLocationManagerDelegate, M
         mapView.addOverlay(circle)
         
         self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.delegate = self as CLLocationManagerDelegate
+        self.locationManager.delegate = self as? CLLocationManagerDelegate
         
         //Zoom to user location
         if let userLocation = locationManager.location?.coordinate {
             let viewRegion = MKCoordinateRegion(center: userLocation, latitudinalMeters: 200, longitudinalMeters: 200)
             mapView.setRegion(viewRegion, animated: false)
         }
-        
-        // mapView Function
-        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            let circleRenderer = MKCircleRenderer(overlay: overlay)
-            circleRenderer.strokeColor = UIColor.red
-            circleRenderer.lineWidth = 1.0
-            return circleRenderer
-        }
-          
     }
-    
+
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let circleRenderer = MKCircleRenderer(overlay: overlay)
+        circleRenderer.strokeColor = UIColor.red
+        circleRenderer.lineWidth = 1.0
+        return circleRenderer
+    }
 }
+
