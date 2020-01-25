@@ -89,6 +89,15 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
           }
         }
         
+        // 6. draw circle
+           func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+               let circleRenderer = MKCircleRenderer(overlay: overlay)
+               circleRenderer.strokeColor = UIColor.red
+               circleRenderer.lineWidth = 1.0
+               return circleRenderer
+           }
+    
+        
     }
     
     func setupData() {
@@ -96,8 +105,8 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
      
             // 2. region data
-            let title = "Marina Bar Hop"
-            let coordinate = CLLocationCoordinate2DMake(33.97823607957177, -118.43823725357653)
+            let title = "Hill & West 5th Bar Hop"
+            let coordinate = CLLocationCoordinate2DMake(34.0487507009847, -118.25143799185756)
             let regionRadius = 300.0
      
             // 3. setup region
@@ -114,18 +123,35 @@ class RadiusLocationViewController: UIViewController, CLLocationManagerDelegate,
             // 5. setup circle
             let circle = MKCircle(center: coordinate, radius: regionRadius)
             mapView.addOverlay(circle)
+            
         }
         else {
             print("System can't track regions")
         }
     }
-     
-    // 6. draw circle
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let circleRenderer = MKCircleRenderer(overlay: overlay)
-        circleRenderer.strokeColor = UIColor.red
-        circleRenderer.lineWidth = 1.0
-        return circleRenderer
-    }
     
 }
+
+
+
+
+//    let directions = MKDirections(request: directionsRequest)
+//    directions.calculateDirectionsWithCompletionHandler { (directionsResponse, error) -> Void in
+//        if let error = error {
+//            println("Error getting directions: \(error.localizedDescription)")
+//        } else {
+//            let route = directionsResponse.routes[0] as! MKRoute
+//            // draw the route in the map
+//            self.mapView.addOverlay(route.polyline)
+//
+//            // get the next closest location
+//            let closestLocation = self.getClosestLocation(toLocationCoord, locations: self.coordinates)
+//            if let closest = closestLocation {
+//                self.getDirections(fromLocationCoord: toLocationCoord, toLocationCoord: closest)
+//            }
+//
+//            // remove the current location's coordinates from the array
+//            self.coordinates = self.coordinates.filter({ $0 != toLocationCoord })
+//        }
+//    }
+//}
