@@ -22,11 +22,11 @@ class QuestionsViewController: UIViewController {
     
     @IBOutlet weak var question3: UITextField!
     
-    @IBOutlet weak var question4: UITextField!
+   // @IBOutlet weak var question4: UITextField!
     
-    @IBOutlet weak var question5: UITextField!
+   // @IBOutlet weak var question5: UITextField!
     
-    @IBOutlet weak var question6: UITextField!
+   // @IBOutlet weak var question6: UITextField!
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
@@ -35,32 +35,34 @@ class QuestionsViewController: UIViewController {
         
         guard var lifeGoal = question1.text,
             var teachMe = question2.text,
-            var changeMind = question3.text,
-            var takePride = question4.text,
-            var imLookingFor = question5.text,
-            var toKnow = question6.text else {
+            var changeMind = question3.text
+//            var takePride = question4.text,
+//            var imLookingFor = question5.text,
+//            var toKnow = question6.text
+            else {
                 print("Fill in all fields...")
                 return }
         
         if question1.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
               question2.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-              question3.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-            question4.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-            question5.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
-        question6.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+              question3.text?.trimmingCharacters(in: .whitespacesAndNewlines) == ""
+//            question4.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+//            question5.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+//        question6.text?.trimmingCharacters(in: .whitespacesAndNewlines) == ""
+        {
               
               showAlert(withTitle: "Error", message: "Please fill in all fields")
               return }
         
-        
+        //        let takePrideInfo = UserInfo(type: "takePride", value: takePride, visible: true)
+        //        let imLookingForInfo = UserInfo(type: "imLookingFor", value: imLookingFor, visible: true)
+        //        let toKnowInfo = UserInfo(type: "toKnow", value: toKnow, visible: true)
         let lifeGoalInfo = UserInfo(type: "lifeGoal", value: lifeGoal, visible: true)
         let teachMeInfo = UserInfo(type: "teachMe", value: teachMe, visible: true)
         let changeMindInfo = UserInfo(type: "changeMind", value: changeMind, visible: true)
-        let takePrideInfo = UserInfo(type: "takePride", value: takePride, visible: true)
-        let imLookingForInfo = UserInfo(type: "imLookingFor", value: imLookingFor, visible: true)
-        let toKnowInfo = UserInfo(type: "toKnow", value: toKnow, visible: true)
         
-        firebaseServer.savePersonalDetailsQuestions(lifeGoalInfo, teachMeInfo, changeMindInfo, takePrideInfo, imLookingForInfo, toKnowInfo) {[weak self] (error) in
+        // takePrideInfo, imLookingForInfo, toKnowInfo
+        firebaseServer.savePersonalDetailsQuestions(lifeGoalInfo, teachMeInfo, changeMindInfo) {[weak self] (error) in
         if error == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let mainPage = storyboard.instantiateViewController(identifier: "profilePageViewController")
@@ -98,13 +100,13 @@ class QuestionsViewController: UIViewController {
             toolBar.setItems([doneButton], animated: false)
             toolBar.isUserInteractionEnabled = true
 
-    // Make Toolbar work for Gender, Birthday and Religion
+    // Make Toolbar work text fields
             question1.inputAccessoryView = toolBar
             question2.inputAccessoryView = toolBar
             question3.inputAccessoryView = toolBar
-            question4.inputAccessoryView = toolBar
-            question5.inputAccessoryView = toolBar
-            question6.inputAccessoryView = toolBar
+//            question4.inputAccessoryView = toolBar
+//            question5.inputAccessoryView = toolBar
+//            question6.inputAccessoryView = toolBar
         }
         
         @objc func dismissKeyboard() {
@@ -116,6 +118,26 @@ class QuestionsViewController: UIViewController {
         }
   
 }
+
+extension UIView {
+
+    func bindToKeyboard() {
+
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    }
+
+    @objc func keyboardWillChange(_ notification: NSNotification) {
+
+        let duration = notification.userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as! Double
+        let curve = notification.userInfo![UIResponder.keyboardAnimationCurveUserInfoKey] as! UInt
+        let beginningFrame = (notification.userInfo![UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        let endFrame = (notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        var deltaY = endFrame.origin.y - beginningFrame.origin.y
+
+        UIView.animateKeyframes(withDuration: duration, delay: 0.0, options: UIView.KeyframeAnimationOptions(rawValue: curve), animations: {
+            self.frame.origin.y += deltaY
+        }, completion: nil)
         
-
-
+    }
+}
+        
