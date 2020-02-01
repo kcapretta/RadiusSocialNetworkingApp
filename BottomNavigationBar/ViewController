@@ -15,10 +15,9 @@ import FirebaseStorage
 
 class ViewController: UIViewController {
     
-    // This Feature is Coming Soon!
-    @IBOutlet weak var datingOutlet: UILabel!
-    @IBOutlet weak var networkingOutlet: UILabel!
-    @IBOutlet weak var friendshipOutlet: UILabel!
+    @IBOutlet weak var mapOutlet: UIButton!
+    
+    @IBOutlet weak var interestedInCollectionView: UICollectionView!
     
     @IBOutlet weak var infoCollectionView: UICollectionView!
     
@@ -43,6 +42,10 @@ class ViewController: UIViewController {
     var isCurrentUserBlocked = false
     var isOtherUserBlocked = false
     
+    // Report Button
+    var isCurrentUserReported = false
+    var isOtherUserReported = false
+    
     var currentlyViewedUserId: String?
     
     
@@ -50,11 +53,14 @@ class ViewController: UIViewController {
     var users: [LocalUser] = []
     
     var userDetails: [[UserDetail: String]] = []
+    var interestedInfo: [[InterestedInInfo: String]] = []
     
     // Post
     var postData = [UISwitch]()
     
 
+    // FILTER BLOCKED USERS
+    
     func filterBlockedUsers(from users: [LocalUser]) {
         var notBlockedUsers = users
         var notBlockedUsersDict = self.usersDict
@@ -76,30 +82,49 @@ class ViewController: UIViewController {
         let notBlocked = Array(notBlockedUsersDict.values)
         self.users = notBlocked
     }
+    
+    // FILTER REPORTED USERS
+    
+    func filterReportUsers(from users: [LocalUser]) {
+        var notReportUsers = users
+        var notReportUsersDict = self.usersDict
+        var reportUsers = newUser.report ?? [:]
+        if let currentUserId = Auth.auth().currentUser?.uid {
+            reportUsers[currentUserId] = true
+        }
+        
+        for (userId, report) in reportUsers ?? [:] {
+            print("UserId...", userId)
+            print("UserHere...", usersDict[userId])
+            if let user = usersDict[userId] {
+                notReportUsersDict.removeValue(forKey: userId)
+            }
+        }
+        let notReport = Array(notReportUsersDict.values)
+        self.users = notReport
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        Utilities.styleFilledButton(mapOutlet)
+        
         infoCollectionView.flashScrollIndicators()
-        
-        // This Feature is Coming Soon!
-        
-        // Dating / Networking / Friendship
-        // setDefaultSelections()
-        
-        // Dating / Networking / Friendship Label Look
-        //        self.datingOutlet.layer.cornerRadius = 10
-        //        self.networkingOutlet.layer.cornerRadius = 10
-        //        self.friendshipOutlet.layer.cornerRadius = 10
+        interestedInCollectionView.flashScrollIndicators()
         
         infoCollectionView.dataSource = self
         infoCollectionView.delegate = self
         cardView.delegate = self
         cardView.dataSource = self
         
+        interestedInCollectionView.dataSource = self
+        interestedInCollectionView.delegate = self
+        
         firebaseServer.fetchUsers {[weak self] (usersDict) in
             self?.usersDict = usersDict
             let fetchedUsers = Array(usersDict.values)
             self?.filterBlockedUsers(from: fetchedUsers)
+            self?.filterReportUsers(from: fetchedUsers)
             self?.loadFirstUser()
             self?.cardView.reloadData()
         }
@@ -119,31 +144,14 @@ class ViewController: UIViewController {
         // Swipe gesture
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
         swipeRight.direction = UISwipeGestureRecognizer.Direction.right
-        // self.view.addGestureRecognizer(swipeRight)
 
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
         swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
-        //self.view.addGestureRecognizer(swipeLeft)
 
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
         swipeDown.direction = UISwipeGestureRecognizer.Direction.down
-        //self.view.addGestureRecognizer(swipeDown)
     }
-    
-    // This Feature is Coming Soon!
-    
-//    func setDefaultSelections() {
-//        if let interests = newUser.interestedIn?.value {
-//            interests.forEach { (interestedIn) in
-//                switch interestedIn {
-//                case .dating: datingSwitched.isOn = true
-//                case .networking: networkingSwitched.isOn = true
-//                case .friendship: friendshipSwitched.isOn = true
-//                }
-//            }
-//        }
-//
-//    }
+
 
     
     func loadFirstUser() {
@@ -159,6 +167,7 @@ class ViewController: UIViewController {
             nameLbl.text = users[0].firstName
             setupDetailsFor(user: users[0])
             infoCollectionView.reloadData()
+            interestedInCollectionView.reloadData()
         }
     }
     
@@ -176,11 +185,6 @@ class ViewController: UIViewController {
         let school = user.school
         let religion = user.religiousBeliefs
         let education = user.educationLevel
-        
-        // This Feature is Coming Soon!
-//        let dating = user.dating
-//        let networking = user.networking
-//        let friendship = user.friendship
         
         if let visible = jobTitle?.visible, visible {
             userDetails.append([.jobTitle: jobTitle!.value.description])
@@ -244,6 +248,7 @@ class ViewController: UIViewController {
         
     }
     
+
     // Change Birthdate to Age
     func calcAge(birthday: String) -> Int {
         let dateFormater = DateFormatter()
@@ -254,7 +259,10 @@ class ViewController: UIViewController {
         let calcAge = calendar.components(.year, from: birthdayDate!, to: now, options: [])
         let age = calcAge.year
         return age!
+    
+    
     }
+    
     
     @objc
     func respondToSwipeGesture(gesture: UIGestureRecognizer) {
@@ -274,12 +282,17 @@ class ViewController: UIViewController {
             }
         }
     }
-    @IBAction func showPopUp(_ sender: Any) {
-        let popOverVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "sbPopUpID") as! PopUpViewController
-        self.addChild(popOverVC)
-        popOverVC.view.frame = self.view.frame
-        self.view.addSubview(popOverVC.view)
-        popOverVC.didMove(toParent: self)
+    
+    @IBAction func flagButton(_ sender: Any) {
+        if let userIdToReport = currentlyViewedUserId {
+            firebaseServer.reportSomeone(with: userIdToReport) {[weak self] (error) in
+                if error == nil {
+                    newUser.report?[userIdToReport] = true
+                    self?.cardView.swipe(.left)
+                }
+                self?.showAlert(withTitle: "User Flagged", message: "Thank you for reporting!")
+            }
+        }
     }
 }
 
@@ -322,28 +335,43 @@ extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
         let user = users[index]
         setupDetailsFor(user: user)
         infoCollectionView.reloadData()
+        interestedInCollectionView.reloadData()
         
         
         nameLbl.text = user.firstName
-        
+        }
     }
-}
+
+
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return userDetails.count
+        return interestedInInfo.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = infoCollectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! UserInfoCollectionViewCell
+        let infoCell = infoCollectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! UserInfoCollectionViewCell
         var (userDetail, title) = userDetails[indexPath.item].first!
         if userDetail == .birthday {
             title = "\(calcAge(birthday: title))"
         }
         
-        cell.setupCell(with: userDetail, title: title)
-        return cell
+        infoCell.setupCell(with: userDetail, title: title)
+        return infoCell
+        
     }
+    
+    func interestedInCollectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let interestedInCell = interestedInCollectionView.dequeueReusableCell(withReuseIdentifier: "infoCellId", for: indexPath) as! UserInfoCollectionViewCell
+        var (interestedInInfo, title) = interestedInfo[indexPath.item].first!
+    }
+    
+    interestedInCell.setupCell(with: InterestedInInfo, title: title)
+    return interestedInCell
+
+    
 }
+
 
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -365,9 +393,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlow
                     newUser.blocked?[userIdToBlock] = true
                     self?.cardView.swipe(.left)
                 }
+                self?.showAlert(withTitle: "User Blocked", message: "You won't see this user again.")
             }
         }
      }
+    
 }
+
 
 
