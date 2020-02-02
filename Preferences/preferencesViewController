@@ -8,8 +8,18 @@
 
 import UIKit
 import QuartzCore
+import FirebaseDatabase
+import WARangeSlider
 
 class preferencesViewController: UIViewController {
+    
+    // For Age Range, after MVP
+    // Pull data from Firebase
+//    var ref:DatabaseReference?
+//    var databaseHandle:DatabaseHandle?
+
+    // Post as string
+//    var postData = [String]()
     
     // Age Range Outlets
     @IBOutlet weak var datingAgeRange: UISlider!
@@ -29,7 +39,14 @@ class preferencesViewController: UIViewController {
     // Age Range Actions
     // Set age preferences
     @IBAction func datingAgeRangeButton(_ sender: Any) {
-        datingAgeRangeLabel.text = String(Int(round(datingAgeRange.value)))
+        
+        let rangeSlider = RangeSlider(frame: frame)
+        view.addSubView(rangeSlider)
+        rangeSlider.addTarget(self, action: #selector(viewController.rangeSliderValueChanged(_:)),
+                                 for: .valueChanged)
+        
+        
+//        datingAgeRangeLabel.text = String(Int(round(datingAgeRange.value)))
         }
     
     @IBAction func networkingAgeRangeButton(_ sender: Any) {
@@ -48,9 +65,7 @@ class preferencesViewController: UIViewController {
     }
     
     @IBAction func backButtonVC1(_ sender: UIButton) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let backBVC1 = storyboard.instantiateViewController(identifier: "SettingsViewController")
-        self.navigationController?.pushViewController(backBVC1, animated: true)
+        dismiss(animated: true)
     }
     
     @IBAction func nextDatingReligious(_ sender: UIButton) {
@@ -70,5 +85,12 @@ class preferencesViewController: UIViewController {
         let nextFRVC = storyboard.instantiateViewController(identifier: "friendshipReligionViewController")
         self.navigationController?.pushViewController(nextFRVC, animated: true)
         }
+    
+    @IBAction func nextDatingInterest(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let nextNDIVC = storyboard.instantiateViewController(identifier: "datingInterestsViewController")
+        self.navigationController?.pushViewController(nextNDIVC, animated: true)
     }
+}
+
 
