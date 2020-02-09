@@ -28,21 +28,19 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
     
     var selectedGender:[Int] = []
     
-    let familyPicker = UIPickerView()
+    let familyPlansPicker = UIPickerView()
     let kidsPicker = UIPickerView()
     let ethnicityPicker = UIPickerView()
     
+    let familyPlans = PickerViewDataSource.familyPlans
+    let kids = PickerViewDataSource.kids
+    let ethnicity = PickerViewDataSource.ethnicity
+    
     let firebaseServer = FirebaseFunctions.shared
-    
-    let family = ["Don't want kids", "Want kids", "Open to kids"]
-    
-    let kids = ["Don't have kids", "Have kids"]
-    
-    let ethnicity = ["American Indian", "African Descent", "East Asian", "Middle Eastern", "Hispanic", "Middle Eastern", "Pacific Islander", "South Asian", "Caucasian", "Other"]
     
     let pickerView = UIPickerView()
 
-    var selectedFamily: String?
+    var selectedFamilyPlans: String?
     var selectedKids: String?
     var selectedEthnicity: String?
 
@@ -80,7 +78,7 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
             var kids = kidsOptionText.text,
             var ethnicity = ethnicityText.text,
             selectedGender.count != 0 else {
-                showAlert(withTitle: "Error", message: "Fill all fields")
+                showAlert(withTitle: "Error", message: "Please fill in all fields")
                 return }
         
         // Removing unnecessary spaces and making lowercase
@@ -112,9 +110,9 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
 
     func createFamilyPicker() {
         
-        familyPicker.delegate = self
-        familyPlansText.inputView = familyPicker
-        familyPicker.backgroundColor = .white
+        familyPlansPicker.delegate = self
+        familyPlansText.inputView = familyPlansPicker
+        familyPlansPicker.backgroundColor = .white
         
         kidsPicker.delegate = self
         kidsOptionText.inputView = kidsPicker
@@ -140,15 +138,15 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
             familyPlansText.inputAccessoryView = toolBar
             kidsOptionText.inputAccessoryView = toolBar
             ethnicityText.inputAccessoryView = toolBar
-        }
+            
+    }
+
 
     @objc func dismissKeyboard() {
             view.endEditing(true)
         }
-    
+    }
 
-    
-}
         // Extension on Dating Picker Views
        extension datingOptionViewController: UIPickerViewDataSource {
             func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -157,7 +155,7 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
             
             func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
                 switch pickerView {
-                case familyPicker: return family.count
+                case familyPlansPicker: return familyPlans.count
                 case kidsPicker: return kids.count
                 case ethnicityPicker: return ethnicity.count
                 default: return 0
@@ -167,9 +165,9 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
             func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
                 
                 switch pickerView{
-                case familyPicker: selectedFamily = family[row]
-                familyPlansText.text = selectedFamily
-                    return family[row]
+                case familyPlansPicker: selectedFamilyPlans = familyPlans[row]
+                familyPlansText.text = selectedFamilyPlans
+                    return familyPlans[row]
                 case kidsPicker:
                     selectedKids = kids[row]
                     kidsOptionText.text = selectedKids
@@ -184,9 +182,9 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
             
             func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
                 switch pickerView {
-                case familyPicker:
-                    selectedFamily = family[row]
-                    familyPlansText.text = selectedFamily
+                case familyPlansPicker:
+                    selectedFamilyPlans = familyPlans[row]
+                    familyPlansText.text = selectedFamilyPlans
                 case kidsPicker:
                     selectedKids = kids[row]
                     kidsOptionText.text = selectedKids
@@ -195,11 +193,12 @@ class datingOptionViewController: BaseViewController, UIPickerViewDelegate {
                     ethnicityText.text = selectedEthnicity
                 default: print("Nothing...")
                 }
-                if(pickerView == familyPicker) {
-                    selectedFamily = family[row]
-                    familyPlansText.text = selectedFamily
-                } else if (pickerView == familyPicker) {
+                if(pickerView == familyPlansPicker) {
+                    selectedFamilyPlans = familyPlans[row]
+                    familyPlansText.text = selectedFamilyPlans
+                } else if (pickerView == familyPlansPicker) {
                 }
 
             }
         }
+            
