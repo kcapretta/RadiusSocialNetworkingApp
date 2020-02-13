@@ -112,5 +112,21 @@ class RadiusMapLocationViewController: UIViewController, MKMapViewDelegate {
           mapView.setRegion(viewRegion, animated: false)
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "newView" {
+            let userViewController = segue.destination as! ViewController
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextSegue = storyboard.instantiateViewController(identifier: "ViewController")
+            self.navigationController?.performSegue(withIdentifier: "newView", sender: Any?.self)
+        }
+    }
 
   }
+
+extension RadiusMapLocationViewController {
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+           performSegue(withIdentifier: "newView", sender: nil)
+       }
+}
