@@ -19,6 +19,9 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
     
     let firebaseServer = FirebaseFunctions.shared
     
+    // Post as string
+    var postData = [String]()
+    
     @IBAction func cancelButton(_ sender: AnyObject) {
         // Cancels
         self.dismiss(animated: true, completion: nil)
@@ -32,18 +35,22 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
     @IBOutlet weak var profilePicView1: UIView!
     @IBOutlet weak var profilePicView2: UIView!
     @IBOutlet weak var profilePicView3: UIView!
-    @IBOutlet weak var profilePicView4: UIView!
-    @IBOutlet weak var profilePicView5: UIView!
-    @IBOutlet weak var profilePicView6: UIView!
+//    @IBOutlet weak var profilePicView4: UIView!
+//    @IBOutlet weak var profilePicView5: UIView!
+//    @IBOutlet weak var profilePicView6: UIView!
     
     
     // Profile picture ImageViews
     @IBOutlet weak var profilePhotoImageView1: UIImageView!
     @IBOutlet weak var profilePhotoImageView2: UIImageView!
     @IBOutlet weak var profilePhotoImageView3: UIImageView!
-    @IBOutlet weak var profilePhotoImageView4: UIImageView!
-    @IBOutlet weak var profilePhotoImageView5: UIImageView!
-    @IBOutlet weak var profilePhotoImageView6: UIImageView!
+//    @IBOutlet weak var profilePhotoImageView4: UIImageView!
+//    @IBOutlet weak var profilePhotoImageView5: UIImageView!
+//    @IBOutlet weak var profilePhotoImageView6: UIImageView!
+    
+    // Pull data from Firebase
+    var ref:DatabaseReference?
+    var databaseHandle:DatabaseHandle?
     
     var currentlySettingImageViewTag: Int?
     var deleteSelectedPhoto: Int?
@@ -67,9 +74,12 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         firstNameText.text = newUser.firstName
+        showProfilePicture()
+        
+        // updateUIWithUserInfo()
         
         // Photo Tapped Recognizer
-        [profilePicView1, profilePicView2, profilePicView3, profilePicView4, profilePicView5, profilePicView6].forEach {[weak self] (view) in
+        [profilePicView1, profilePicView2, profilePicView3].forEach {[weak self] (view) in
             guard let view = view else { return}
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageViewTapped))
             view.addGestureRecognizer(tapGesture)
@@ -79,12 +89,11 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
     
     func pullUserImages() {
         var index = 0
-        let imageViews = [profilePhotoImageView1,
+        let imageViews = [
+        profilePhotoImageView1,
         profilePhotoImageView2,
-        profilePhotoImageView3,
-        profilePhotoImageView4,
-        profilePhotoImageView5,
-        profilePhotoImageView6]
+        profilePhotoImageView3]
+    
         
         if let uid = Auth.auth().currentUser?.uid {
             imageViews.forEach { (imageView) in
@@ -98,6 +107,20 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
                 }
                 index = index + 1
             }
+        } else {
+            showAlert(withTitle: "Error", message: "Not signed in")
+        }
+    }
+    
+    // Main profile picture
+    func showProfilePicture() {
+        if let uid = Auth.auth().currentUser?.uid {
+                    let storage = Storage.storage()
+                    let storageRef = storage.reference(withPath: "\(uid)/photos/\(0)")
+                    PhotoUploader.downloadImageUrl(from: storageRef) {[weak self] (url) in
+                        guard let url = url else { return }
+                        self?.profilePhotoImageView1.downloaded(from: url, contentMode: .scaleAspectFill)
+                    }
         } else {
             showAlert(withTitle: "Error", message: "Not signed in")
         }
@@ -127,12 +150,12 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
             profilePhotoImageView2.image = image
             case 2:
             profilePhotoImageView3.image = image
-            case 3:
-            profilePhotoImageView4.image = image
-            case 4:
-            profilePhotoImageView5.image = image
-            case 5:
-            profilePhotoImageView6.image = image
+//            case 3:
+//            profilePhotoImageView4.image = image
+//            case 4:
+//            profilePhotoImageView5.image = image
+//            case 5:
+//            profilePhotoImageView6.image = image
         default:
             profilePhotoImageView1.image = image
         }
@@ -143,13 +166,10 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
     @IBAction func doneButtonTapped(_ sender: Any) {
         let images = [profilePhotoImageView1.image,
                       profilePhotoImageView2.image,
-                      profilePhotoImageView3.image,
-                      profilePhotoImageView4.image,
-                      profilePhotoImageView5.image,
-                      profilePhotoImageView6.image
+                      profilePhotoImageView3.image
         ]
         
-        let filteredImages = images.filter { (image) -> Bool in
+        var filteredImages = images.filter { (image) -> Bool in
             return image != nil
         }
         
@@ -169,10 +189,13 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
             } else {
                 showAlert(withTitle: "Error", message: "No Image Selected")
             }
+            
             index = index + 1
+            
         }
         
     }
+    
     @IBAction func editMyInformationTapped(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editInfo = storyboard.instantiateViewController(identifier: "EditProfileViewController")
@@ -184,12 +207,13 @@ class profilePageViewController: UIViewController, UIImagePickerControllerDelega
         self.navigationController?.pushViewController(editQuestions, animated: true)
     }
     
-    @IBAction func viewMyProfileTapped(_ sender: UIButton) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let editQuestions = storyboard.instantiateViewController(identifier: "ViewProfileViewController")
-        self.navigationController?.pushViewController(editQuestions, animated: true)
-        
-    }
+    // Create this after MVP
+//    @IBAction func viewMyProfileTapped(_ sender: UIButton) {
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let editQuestions = storyboard.instantiateViewController(identifier: "ViewProfileViewController")
+//        self.navigationController?.pushViewController(editQuestions, animated: true)
+//
+//    }
     
     @IBAction func connectionsTapped(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
