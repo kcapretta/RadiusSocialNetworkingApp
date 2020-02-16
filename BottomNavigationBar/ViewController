@@ -15,9 +15,13 @@ import FirebaseStorage
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var mapOutlet: UIButton!
+    @IBOutlet weak var datingOutlet: UIButton!
     
-    @IBOutlet weak var interestedInCollectionView: UICollectionView!
+    @IBOutlet weak var friendshipOutlet: UIButton!
+    
+    @IBOutlet weak var networkingOutlet: UIButton!
+    
+    @IBOutlet weak var mapOutlet: UIButton!
     
     @IBOutlet weak var infoCollectionView: UICollectionView!
     
@@ -53,7 +57,6 @@ class ViewController: UIViewController {
     var users: [LocalUser] = []
     
     var userDetails: [[UserDetail: String]] = []
-    var interestedInfo: [[InterestedInInfo: String]] = []
     
     // Post
     var postData = [UISwitch]()
@@ -110,15 +113,11 @@ class ViewController: UIViewController {
         Utilities.styleFilledButton(mapOutlet)
         
         infoCollectionView.flashScrollIndicators()
-        interestedInCollectionView.flashScrollIndicators()
         
         infoCollectionView.dataSource = self
         infoCollectionView.delegate = self
         cardView.delegate = self
         cardView.dataSource = self
-        
-        interestedInCollectionView.dataSource = self
-        interestedInCollectionView.delegate = self
         
         firebaseServer.fetchUsers {[weak self] (usersDict) in
             self?.usersDict = usersDict
@@ -167,7 +166,6 @@ class ViewController: UIViewController {
             nameLbl.text = users[0].firstName
             setupDetailsFor(user: users[0])
             infoCollectionView.reloadData()
-            interestedInCollectionView.reloadData()
         }
     }
     
@@ -237,6 +235,7 @@ class ViewController: UIViewController {
         self.userDetails = userDetails
     }
     
+    
     @IBAction func radiusNextVC(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let radiusVC = storyboard.instantiateViewController(identifier: "GeotificationsViewController")
@@ -296,6 +295,25 @@ class ViewController: UIViewController {
     }
 }
 
+extension ViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return userDetails.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let infoCell = infoCollectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! UserInfoCollectionViewCell
+        var (userDetail, title) = userDetails[indexPath.item].first!
+        if userDetail == .birthday {
+            title = "\(calcAge(birthday: title))"
+        }
+        
+        infoCell.setupCell(with: userDetail, title: title)
+        return infoCell
+        
+    }
+
+}
+
 extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
     
     func koloda(_ koloda: KolodaView, didShowCardAt index: Int) {
@@ -335,44 +353,11 @@ extension ViewController : KolodaViewDelegate, KolodaViewDataSource {
         let user = users[index]
         setupDetailsFor(user: user)
         infoCollectionView.reloadData()
-        interestedInCollectionView.reloadData()
         
         
         nameLbl.text = user.firstName
         }
     }
-
-
-extension ViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userDetails.count
-        return interestedInInfo.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let infoCell = infoCollectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! UserInfoCollectionViewCell
-        var (userDetail, title) = userDetails[indexPath.item].first!
-        if userDetail == .birthday {
-            title = "\(calcAge(birthday: title))"
-        }
-        
-        infoCell.setupCell(with: userDetail, title: title)
-        return infoCell
-        
-    }
-    
-    func interestedInCollectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let interestedInCell = interestedInCollectionView.dequeueReusableCell(withReuseIdentifier: "infoCellId", for: indexPath) as! UserInfoCollectionViewCell
-        var (interestedInInfo, title) = interestedInfo[indexPath.item].first!
-    }
-    
-    interestedInCell.setupCell(with: InterestedInInfo, title: title)
-    return interestedInCell
-
-    
-}
-
-
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
