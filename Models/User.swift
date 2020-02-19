@@ -13,6 +13,10 @@ var newUser = LocalUser(firstName: "", lastName: "", email: "")
 // SLICESIX
 // Custom String
 
+protocol UIFriendlyDescription {
+    var uiFriendlyDescription: String { get }
+}
+
 struct UserInfo<T: CustomStringConvertible> {
     var type: String
     var value: T
@@ -39,7 +43,7 @@ struct UserInfo<T: CustomStringConvertible> {
 
 // Politics
 
-enum Politics: CustomStringConvertible {
+enum Politics: CustomStringConvertible, UIFriendlyDescription {
     case liberal
     case moderate
     case democrat
@@ -64,6 +68,16 @@ enum Politics: CustomStringConvertible {
         case .democrat: return "democrat"
         case .libertarian: return "libertarian"
         case .conservative: return "conservative"
+        }
+    }
+    
+    var uiFriendlyDescription: String {
+    switch self {
+        case .liberal: return "Liberal"
+        case .moderate: return "Moderate"
+        case .democrat: return "Democrat"
+        case .libertarian: return "Libertarian"
+        case .conservative: return "Conservative"
         }
     }
 }
@@ -93,7 +107,7 @@ enum LookingFor: CustomStringConvertible {
 }
 // Religion
 
-enum Religion: CustomStringConvertible {
+enum Religion: CustomStringConvertible, UIFriendlyDescription {
     case atheist
     case agnostic
     case buddhist
@@ -132,11 +146,25 @@ enum Religion: CustomStringConvertible {
         case .spiritual: return "spiritual"
         }
     }
+    
+    var uiFriendlyDescription: String {
+    switch self {
+        case .atheist: return "Atheist"
+        case .agnostic: return "Agnostic"
+        case .buddhist: return "Buddhist"
+        case .catholic: return "Catholic"
+        case .christian: return "Christian"
+        case .hindu: return "Hindu"
+        case .jewish: return "Jewish"
+        case .muslim: return "Muslim"
+        case .spiritual: return "Spiritual"
+        }
+    }
 }
 
 // Gender
 
-enum Gender: CustomStringConvertible {
+enum Gender: CustomStringConvertible, UIFriendlyDescription {
     case woman
     case man
     case agender
@@ -200,6 +228,39 @@ enum Gender: CustomStringConvertible {
         }
     }
     
+    var uiFriendlyDescription: String {
+        switch self {
+        case .woman: return "Woman"
+        case .man: return "Man"
+        case .agender: return "Agender"
+        case .androgyne: return "Androgyne"
+        case .androgynous: return "Androgynous"
+        case .bigender: return "Bigender"
+        case .demiman: return "Demiman"
+        case .demiwoman: return "Demiwoman"
+        case .genderfluid: return "Gender Fluid"
+        case .genderneutral: return "Gender Neutral"
+        case .gendernonconforming: return "Gender Non-comforning"
+        case .genderquestioning: return "Gender Questioning"
+        case .gendervariant: return "gender Variant"
+        case .genderqueer: return "Gender Queer"
+        case .intersex: return "Intersex"
+        case .intersexman: return "Intersexman"
+        case .intersexwoman: return "Intersexwoman"
+        case .nonbinary: return "Nonbinary"
+        case .nongendered: return "Nongendered"
+        case .pangender: return "Pangender"
+        case .polygender: return "Polygender"
+        case .thirdgender: return "Thirdgender"
+        case .transgender: return "Transgender"
+        case .transgenderman: return "Transgenderman"
+        case .transgenderwoman: return "Transgenderwoman"
+        case .transitioning: return "Transitioning"
+        case .transsexual: return "Transsexual"
+        case .twospirit: return "Two Spirit"
+        }
+    }
+    
     var description: String {
         switch self {
         case .woman: return "woman"
@@ -236,7 +297,7 @@ enum Gender: CustomStringConvertible {
 
 // Ethnicity
 
-enum Ethnicity: CustomStringConvertible {
+enum Ethnicity: CustomStringConvertible, UIFriendlyDescription {
 
     case eastAsian
     case southAsian
@@ -274,11 +335,24 @@ enum Ethnicity: CustomStringConvertible {
         }
     }
     
+    var uiFriendlyDescription: String {
+    switch self {
+        case .eastAsian: return "East Asian"
+        case .southAsian: return "South Asian"
+        case .middleEastern: return "Middle Eastern"
+        case .americanIndian: return "American Indian"
+        case .africanDescent: return "African Descent"
+        case .hispanic: return "Hispanic"
+        case .pacificIslander: return "Pacific Islander"
+        case .caucasian: return "Caucasian"
+        }
+    }
+    
 }
 
 // Family Plans
 
-enum FamilyPlans: CustomStringConvertible {
+enum FamilyPlans: CustomStringConvertible, UIFriendlyDescription {
     case wantsKids
     case noKids
     case openToKids
@@ -300,11 +374,19 @@ enum FamilyPlans: CustomStringConvertible {
         case .openToKids: return "openToKids"
         }
     }
+    
+    var uiFriendlyDescription: String {
+    switch self {
+        case .wantsKids: return "Want Kids"
+        case .noKids: return "Don't Want Kids"
+        case .openToKids: return "Open To Kids"
+        }
+    }
 }
 
 // Education Level
 
-enum EducationLevel: CustomStringConvertible {
+enum EducationLevel: CustomStringConvertible, UIFriendlyDescription {
     case bootcamp
     case someCollege
     case selfTaught
@@ -331,11 +413,21 @@ enum EducationLevel: CustomStringConvertible {
         case .postgrad: return "postgrad"
         }
     }
+    
+    var uiFriendlyDescription: String {
+    switch self {
+        case .bootcamp: return "Bootcamp"
+        case .someCollege: return "Some College"
+        case .selfTaught: return "Self Taught"
+        case .undergrad: return "Undergrad"
+        case .postgrad: return "Postgrad"
+        }
+    }
 }
 
 // Drink
 
-enum Drink: CustomStringConvertible {
+enum Drink: CustomStringConvertible, UIFriendlyDescription {
     case yes
     case no
     case sometimes
@@ -354,6 +446,14 @@ enum Drink: CustomStringConvertible {
         case .yes: return "yes"
         case .no: return "no"
         case .sometimes: return "sometimes"
+        }
+    }
+    
+    var uiFriendlyDescription: String {
+    switch self {
+        case .yes: return "Yes"
+        case .no: return "No"
+        case .sometimes: return "Sometimes"
         }
     }
 }
@@ -387,29 +487,6 @@ enum InterestedIn: CustomStringConvertible {
     }
 }
 
-// Smoking
-
-enum Smoking: CustomStringConvertible {
-    case yes
-    case no
-    case sometimes
-    
-    static func valueFor(choice: String) -> Smoking{
-        switch choice {
-        case "yes": return .yes
-        case "no": return .no
-        default: return .sometimes
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .yes: return "yes"
-        case .no: return "no"
-        case .sometimes: return "sometimes"
-        }
-    }
-}
 
 //SLICESEVEN
 // Structure
@@ -432,9 +509,8 @@ struct LocalUser {
     var kids: UserInfo<Bool>? = nil
     var familyPlans: UserInfo<FamilyPlans>? = nil
     var drink: UserInfo<Drink>? = nil
-    var smoking: UserInfo<Smoking>? = nil
     var lookingFor: UserInfo<LookingFor>? = nil
-    var lifeGoals: UserInfo<String>? = nil
+    var lifeGoal: UserInfo<String>? = nil
     var teachMe: UserInfo<String>? = nil
     var changeMind: UserInfo<String>? = nil
     var takePride: UserInfo<String>? = nil
@@ -447,10 +523,14 @@ struct LocalUser {
     var accountPicture4: UserInfo<String>? = nil
     var accountPicture5: UserInfo<String>? = nil
     var accountPicture6: UserInfo<String>? = nil
+    var userId: String? = nil
+    var blocked: [String : Bool]? = [:]
+    var report: [String: Bool]? = [:]
+    
     
     //SLICEEIGHT
     func makeDictionary() -> [String: Any] {
-        print("imlooking...", imLookingFor)
+        print("imlooking...", imLookingFor, changeMind)
         return [
             "firstName": firstName,
             "lastName": lastName,
@@ -463,14 +543,14 @@ struct LocalUser {
             "religiousBeliefs": religiousBeliefs?.dictionaryFor() ?? [:],
             "birthday": birthday?.dictionaryFor() ?? [:],
             "lookingFor": lookingFor?.dictionaryFor() ?? [:],
-            "lifeGoal": lifeGoals?.dictionaryFor() ?? [:],
+            "lifeGoal": lifeGoal?.dictionaryFor() ?? [:],
             "teachMe": teachMe?.dictionaryFor() ?? [:],
             "changeMind": changeMind?.dictionaryFor() ?? [:],
             "takePride": takePride?.dictionaryFor() ?? [:],
             "looking": imLookingFor?.dictionaryFor() ?? [:],
             "aboutYou": toKnow?.dictionaryFor() ?? [:],
             "interestedIn": interestedIn?.dictionaryFor() ?? [:],
-            "politics": interestedIn?.dictionaryFor() ?? [:],
+            "politics": politics?.dictionaryFor() ?? [:],
             "drink": drink?.dictionaryFor() ?? [:],
             "familyPlans": familyPlans?.dictionaryFor() ?? [:],
             "kids": kids?.dictionaryFor() ?? [:],
@@ -482,8 +562,9 @@ struct LocalUser {
             "accountPicture3": accountPicture3?.dictionaryFor() ?? [:],
             "accountPicture4": accountPicture4?.dictionaryFor() ?? [:],
             "accountPicture5": accountPicture5?.dictionaryFor() ?? [:],
-            "accountPicture6": accountPicture6?.dictionaryFor() ?? [:]
-            
+            "accountPicture6": accountPicture6?.dictionaryFor() ?? [:],
+            "blocked": blocked ?? [:],
+            "report": report ?? [:]
         ]
     }
     
@@ -498,23 +579,31 @@ struct LocalUser {
         let school = dictionary["school"] as? [String: Any]
         let educationLevel = dictionary["educationLevel"] as? [String: Any]
         let religiousBeliefs = dictionary["religiousBeliefs"] as? [String: Any]
+        let birthday = dictionary["birthday"] as? [String: Any]
         let politics = dictionary["politics"] as? [String: Any]
         let ethnicity = dictionary["ethnicity"] as? [String: Any]
         let kids = dictionary["kids"] as? [String: Any]
         let drink = dictionary["drink"] as? [String: Any]
-        let smoking = dictionary["smoking"] as? [String: Any]
         let lookingFor = dictionary["lookingFor"] as? [String: Any]
         let homeTown = dictionary["homeTown"] as? [String: Any]
         let interestedIn = dictionary["interestedIn"] as? [String: Any]
         let familyPlans = dictionary["familyPlans"] as? [String: Any]
         let height = dictionary["height"] as? [String: Any]
+        let lifeGoal = dictionary["lifeGoal"] as? [String :Any]
+        let changeMind = dictionary["changeMind"] as? [String :Any]
+        let takePride = dictionary["takePride"] as? [String :Any]
+        let imLookingFor = dictionary["imLookingFor"] as? [String :Any]
+        let teachMe = dictionary["teachMe"] as? [String :Any]
+        let toKnow = dictionary["theKnow"] as? [String :Any]
         let accountPicture1 = dictionary["accountPicture1"] as? [String: Any]
         let accountPicture2 = dictionary["accountPicture2"] as? [String: Any]
         let accountPicture3 = dictionary["accountPicture3"] as? [String: Any]
         let accountPicture4 = dictionary["accountPicture4"] as? [String: Any]
         let accountPicture5 = dictionary["accountPicture5"] as? [String: Any]
         let accountPicture6 = dictionary["accountPicture6"] as? [String: Any]
-        
+        let blocked = dictionary["blocked"] as? [String:Bool] ?? [:]
+        let report = dictionary["report"] as?
+            [String:Bool] ?? [:]
         
         // SLICETEN
         //Set Values
@@ -580,29 +669,26 @@ struct LocalUser {
                                                                 visible: educationLevel?["visible"] as? Bool ?? false)
         
         // Politics Value
-        let politicsValue: UserInfo<Politics> = UserInfo(type: "politicsValue",
+        let politicsValue: UserInfo<Politics> = UserInfo(type: "politics",
                                                                 value: Politics.valueFor(choice: politics?["value"] as? String ?? ""),
                                                                 visible: politics?["visible"] as? Bool ?? false)
         
         // Ethnicity Value
-        let ethnicityValue: UserInfo<Ethnicity> = UserInfo(type: "ethnicityValue",
+        let ethnicityValue: UserInfo<Ethnicity> = UserInfo(type: "ethnicity",
                                                                 value: Ethnicity.valueFor(choice: ethnicity?["value"] as? String ?? ""),
                                                                 visible: ethnicity?["visible"] as? Bool ?? false)
         
         // Family Plans Value
-        let familyPlansValue: UserInfo<FamilyPlans> = UserInfo(type: "familyPlansValue",
-                                                                value: FamilyPlans.valueFor(choice: kids?["value"] as? String ?? ""),
+        let familyPlansValue: UserInfo<FamilyPlans> = UserInfo(type: "familyPlans",
+                                                                value: FamilyPlans.valueFor(choice: familyPlans?["value"] as? String ?? ""),
                                                                 visible: kids?["visible"] as? Bool ?? false)
         
         // Drink Value
-        let drinkValue: UserInfo<Drink> = UserInfo(type: "drinkValue",
+        let drinkValue: UserInfo<Drink> = UserInfo(type: "drink",
                                                                 value: Drink.valueFor(choice: drink?["value"] as? String ?? ""),
                                                                 visible: drink?["visible"] as? Bool ?? false)
+    
         
-        // Smoking Value
-        let smokingValue: UserInfo<Smoking> = UserInfo(type: "smokingValue",
-                                                                value: Smoking.valueFor(choice: smoking?["value"] as? String ?? ""),
-                                                                visible: smoking?["visible"] as? Bool ?? false)
         
         // Looking For Value ( men / women / both )
         let lookingForValue: UserInfo<LookingFor> = UserInfo(type: "lookingForValue",
@@ -610,23 +696,52 @@ struct LocalUser {
                                                                 visible: lookingFor?["visible"] as? Bool ?? false)
         
         // Interested In ( dating / networking / friendship )
-               let interestedInValue: UserInfo<[InterestedIn]> = UserInfo(type: "interestedIn",
+               let interestedInValue: UserInfo<[InterestedIn]> = UserInfo(type: "interestedInValue",
                                                                        value: InterestedIn.valueFor(choice: interestedIn?["value"] as? [String] ?? []),
                                                                        visible: interestedIn?["visible"] as? Bool ?? false)
         
         // DATE PICKER
         // Birthday
-//        let birthdayValue: UserInfo<Birthday> = UserInfo(type: "birthdayValue",
-//                                                                value: Birthday.valueFor(choice: birthday?["value"] as? String ?? ""),
-//                                                                visible: birthday?["visible"] as? Bool ?? false)
+        let birthdayValue: UserInfo<String> = UserInfo(type: "birthdayValue",
+                                                                value: birthday?["value"] as? String ?? "",
+                                                                visible: birthday?["visible"] as? Bool ?? false)
         
         
         
-        // CURRENTLY WORKING ON
         // Height
         let heightValue: UserInfo<String> = UserInfo(type: "heightValue",
                                                                 value: height?["value"] as? String ?? "",
                                                                 visible: height?["visible"] as? Bool ?? false)
+        
+        // Life Goal
+        let lifeGoalValue: UserInfo<String> = UserInfo(type: "lifeGoalValue",
+                                                       value: lifeGoal?["value"] as? String ?? "",
+                                                       visible: homeTown?["visible"] as? Bool ?? false)
+        
+        // Teach Me
+        let teachMeValue: UserInfo<String> = UserInfo(type: "teachMeValue",
+                                                       value: teachMe?["value"] as? String ?? "",
+                                                       visible: teachMe?["visible"] as? Bool ?? false)
+        
+        // Change Mind
+        let changeMindValue: UserInfo<String> = UserInfo(type: "changeMindValue",
+                                                       value: changeMind?["value"] as? String ?? "",
+                                                       visible: changeMind?["visible"] as? Bool ?? false)
+        
+//        // Take Pride
+//        let takePrideValue: UserInfo<String> = UserInfo(type: "takePrideValue",
+//                                                       value: takePride?["value"] as? String ?? "",
+//                                                       visible: takePride?["visible"] as? Bool ?? false)
+        
+//        // I'm Looking For
+//        let imLookingForValue: UserInfo<String> = UserInfo(type: "imLookingForValue",
+//                                                       value: imLookingFor?["value"] as? String ?? "",
+//                                                       visible: imLookingFor?["visible"] as? Bool ?? false)
+        
+//        // To Know
+//        let toKnowValue: UserInfo<String> = UserInfo(type: "toKnowValue",
+//                                                       value: toKnow?["value"] as? String ?? "",
+//                                                       visible: toKnow?["visible"] as? Bool ?? false)
         
         
         
@@ -637,21 +752,21 @@ struct LocalUser {
 //                                                                visible: kids?["visible"] as? Bool ?? false)
         
         // Kids
-        // let kidsValue: UserInfo<Kids> = UserInfo(type: "kidsValue",
-//                                                                value: Kids.valueFor(choice: kids?["value"] as? String ?? ""),
-//                                                                visible: kids?["visible"] as? Bool ?? false)
+         let kidsValue: UserInfo<Bool> = UserInfo(type: "kids",
+                                                                value: kids?["value"] as? Bool ?? false,
+                                                                visible: kids?["visible"] as? Bool ?? false)
+        
         
         
         
         // SLICEELEVEN
         // Create localUser
-        let localUser = LocalUser(firstName: firstName, lastName: lastName, email: email, gender: genderValue, profilePicture: profilePict, birthday: nil, jobTitle: jobTitleValue, school: schoolValue, educationLevel: educationLevelValue, religiousBeliefs: religiousBeliefValue, homeTown: homeTownValue, politics: politicsValue, height: heightValue, ethnicity: ethnicityValue, familyPlans: familyPlansValue, drink: drinkValue, smoking: smokingValue, lookingFor: lookingForValue, lifeGoals: nil, teachMe: nil, changeMind: nil, takePride: nil, imLookingFor: nil, toKnow: nil, interestedIn: interestedInValue, accountPicture1: accountPict1, accountPicture2: accountPict2, accountPicture3: accountPict3, accountPicture4: accountPict4, accountPicture5: accountPict5, accountPicture6: accountPict6)
-        // kids
-        // birthday
+        let localUser = LocalUser(firstName: firstName, lastName: lastName, email: email, gender: genderValue, profilePicture: profilePict, birthday: birthdayValue, jobTitle: jobTitleValue, school: schoolValue, educationLevel: educationLevelValue, religiousBeliefs: religiousBeliefValue, homeTown: homeTownValue, politics: politicsValue, height: heightValue, ethnicity: ethnicityValue, kids: kidsValue, familyPlans: familyPlansValue, drink: drinkValue, lookingFor: lookingForValue, lifeGoal: lifeGoalValue, teachMe: teachMeValue, changeMind: changeMindValue, interestedIn: interestedInValue, accountPicture1: accountPict1, accountPicture2: accountPict2, accountPicture3: accountPict3, accountPicture4: accountPict4, accountPicture5: accountPict5, accountPicture6: accountPict6, blocked: blocked, report: report)
+
+        // takePride: takePrideValue, imLookingFor: imLookingForValue, toKnow: toKnowValue,
         
         return localUser
         
         
     }
 }
-
