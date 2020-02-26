@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import CoreData
 import CoreLocation
+import BackgroundTasks
+import IQKeyboardManagerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,11 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        // [NSObject: AnyObject]
+       IQKeyboardManager.shared.enable = true
         
-        //        let pageControl = UIPageControl.appearance()
-        //        pageControl.currentPageIndicatorTintColor = .black
-        //        pageControl.pageIndicatorTintColor = .lightGray
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         let options: UNAuthorizationOptions = [.badge, .sound, .alert]
@@ -49,8 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let signedIn = UserDefaults.standard.bool(forKey: "signedIn")
         
         if(signedIn) {
-            let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeVC")
-            self.window?.rootViewController = homeVC
+            let HomeVC2 = storyboard.instantiateViewController(withIdentifier: "HomeTabBarController")
+            self.window?.rootViewController = HomeVC2
         } else {
             let signInVC = storyboard.instantiateViewController(withIdentifier: "EntryVC")
             self.window?.rootViewController = signInVC
@@ -117,6 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }catch{
             return false
+
         }
     }
     func handleEvent(for region: CLRegion!) {
