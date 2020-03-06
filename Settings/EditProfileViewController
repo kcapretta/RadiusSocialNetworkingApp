@@ -13,12 +13,12 @@ import FirebaseStorage
 class EditProfileViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate {
     
     @IBAction func backButtonTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let backBVC10 = storyboard.instantiateViewController(identifier: "profilePageViewController")
-                self.navigationController?.pushViewController(backBVC10, animated: true)
+        dismiss(animated: true)
     }
     
     @IBAction func doneButtonTapped(_ sender: Any) {
+        var firstName = firstNameTextField.text
+        var lastName = lastNameTextField.text
         var gender = genderTextField.text
         var height = heightTextField.text
         var ethnicity = ethnicityTextField.text
@@ -250,6 +250,13 @@ class EditProfileViewController: UIViewController, UITextFieldDelegate, UIPicker
         educationTextField.inputAccessoryView = toolBar
         politicalTextField.inputAccessoryView = toolBar
         drinkingTextField.inputAccessoryView = toolBar
+        firstNameTextField.inputAccessoryView = toolBar
+        lastNameTextField.inputAccessoryView = toolBar
+        hometownTextField.inputAccessoryView = toolBar
+        jobTitleTextField.inputAccessoryView = toolBar
+        schoolTextField.inputAccessoryView = toolBar
+        
+        
     }
     
     @objc func dismissKeyboard() {
