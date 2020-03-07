@@ -11,6 +11,7 @@ import Foundation
 var newUser = LocalUser(firstName: "", lastName: "", email: "")
 
 // SLICESIX
+
 // Custom String
 
 protocol UIFriendlyDescription {
@@ -770,3 +771,4 @@ struct LocalUser {
         
     }
 }
+
