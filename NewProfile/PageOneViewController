@@ -10,8 +10,10 @@ import UIKit
 import Firebase
 import FirebaseStorage
 
-class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate {
+class PageOneViewController: BaseViewController, UITextFieldDelegate, UIPickerViewDelegate {
 
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     @IBOutlet weak var schoolInput: UITextField!
     
     @IBOutlet weak var educationText: UITextField!
@@ -22,6 +24,8 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
     
     @IBOutlet weak var heightText: UITextField!
     
+    let height = PickerViewDataSource.heights
+    
     let educationPicker = UIPickerView()
     let politicsPicker = UIPickerView()
     let drinkPicker = UIPickerView()
@@ -29,26 +33,11 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
     
     let firebaseServer = FirebaseFunctions.shared
     
+    let education = PickerViewDataSource.education
+    let politics = PickerViewDataSource.politics
+    let drinking = PickerViewDataSource.drinking
+    let heights = PickerViewDataSource.heights
     
-        // Picker values
-        
-        let education = ["High school",
-                         "Bootcamp",
-                         "Some College",
-                         "Self Taught",
-                         "Undergrad",
-                         "Postgrad"]
-    
-        let politics = ["Liberal",
-                        "Moderate",
-                        "Democrat",
-                        "Libertarian",
-                        "Conservative"]
-    
-        let drinking = ["Yes", "No", "Sometimes"]
-    
-        let heights = ["4'0 (122 cm)", "4'1 (125 cm)", "4'2 (128 cm)", "4'3 (130 cm)", "4'4 (133 cm)", "4'5 (135 cm)", "4'6 (138 cm)", "4'7 (140 cm)", "4'8 (143 cm)", "4'9 (145 cm)", "4'10 (148 cm)", "4'11 (150 cm)", "5'0 (153 cm)", "5'1 (155 cm)", "5'2 (158 cm)", "5'3 (161 cm)", "5'4 (163 cm)", "5'5 (166 cm)", "5'6 (168 cm)", "5'7 (171 cm)", "5'8 (173 cm)", "5'9 (176 cm)", "5'10 (178 cm)", "5'11 (181 cm)", "6'0 (183 cm)", "6'1 (186 cm)", "6'2 (189 cm)", "6'3 (191 cm)", "6'4 (194 cm)", "6'5 (196 cm)", "6'6 (199 cm)", "6'7 (201 cm)", "6'8 (204 cm)", "6'9 (206 cm)", "6'9 (209 cm)", "6'11 (211 cm)", "7'0 (214 cm)"]
-
     var selectedEducation: String?
     var selectedPolitics: String?
     var selectedDrinking: String?
@@ -69,13 +58,22 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
     
     @IBAction func next(_ sender: UIButton) {
         
-        guard var school = schoolInput.text,
+        guard let school = schoolInput.text,
             var education = educationText.text,
             var politics = politicalText.text,
             var drinking = drinkingText.text,
             var height = heightText.text else {
-                print("Fill all fields...")
+                showAlert(message: "Please fill in all fields", title: "Error")
                 return }
+        
+        if schoolInput.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+              educationText.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+              politicalText.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            heightText.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            drinkingText.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+              
+              showAlert(withTitle: "Error", message: "Please fill in all fields")
+              return }
         
         politics = politics.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
         education = education.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
@@ -134,6 +132,7 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
             politicalText.inputAccessoryView = toolBar
             drinkingText.inputAccessoryView = toolBar
             heightText.inputAccessoryView = toolBar
+            schoolInput.inputAccessoryView = toolBar
         }
 
     @objc func dismissKeyboard() {
@@ -156,7 +155,7 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
         case educationPicker: return education.count
         case politicsPicker: return politics.count
         case drinkPicker: return drinking.count
-        case heightsPicker: return heights.count
+        case heightsPicker: return height.count
         default: return 0
         }
     }
@@ -178,9 +177,9 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
             drinkingText.text = selectedDrinking
             return drinking[row]
         case heightsPicker:
-            selectedHeight = heights[row]
+            selectedHeight = height[row]
             heightText.text = selectedHeight
-            return heights[row]
+            return height[row]
             
         default: return ""
         }
@@ -200,7 +199,7 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
             selectedDrinking = drinking[row]
             drinkingText.text = selectedDrinking
         case heightsPicker:
-            selectedHeight = heights[row]
+            selectedHeight = height[row]
             heightText.text = selectedHeight
         default: print("Nothing...")
         }
@@ -213,8 +212,4 @@ class PageOneViewController: UIViewController, UITextFieldDelegate, UIPickerView
     }
 
 }
-    
-
-    
-
 
