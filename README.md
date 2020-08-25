@@ -2,7 +2,7 @@
 
 A video tutorial of this app is here: https://youtu.be/uDEzVXiJA58
 
-*Release Date: April 1st*
+*Release Date: November 1st*
 
 Radius is a dating, networking, and friendship application. My main idea behind this app is to create accessibility to new — designing a way to meet with people you're already near within a bar, coffee shop, or other commercial establishments. 
 
