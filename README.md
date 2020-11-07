@@ -1,5 +1,7 @@
 # RadiusSocialNetworkingApp
 
+This particular repository was built for easy navigation of Radius, for those new to code. Please check out the updated repository (familiar to programmers) here: https://github.com/kcapretta/RadiusApplication
+
 A video tutorial of this app is here: https://youtu.be/uDEzVXiJA58
 
 
